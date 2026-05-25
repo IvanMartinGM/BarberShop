@@ -207,36 +207,37 @@ Las principales funciones del sistema son:
 - **RF-13** El sistema debe permitir actualizar la información de un barbero existente.
 - **RF-14** El sistema debe exponer un endpoint para listar los barberos disponibles.
 - **RF-15** El sistema debe permitir al administrador configurar los horarios de trabajo de cada barbero.
+- **RF-16** El sistema debe permitir al barbero seleccionar del catálogo general los servicios que él ofrece y realiza."
 
 ---
 
 ## 3.1.4 Gestión de Servicios
 
-- **RF-16** El sistema debe permitir al administrador registrar servicios en el catálogo.
-- **RF-17** El sistema debe permitir al administrador actualizar la información de un servicio existente.
-- **RF-18** El sistema debe permitir al administrador eliminar servicios del catálogo de forma lógica (soft delete), sin borrarlos físicamente de la base de datos.
-- **RF-19** El sistema debe exponer un endpoint para listar los servicios activos disponibles.
-- **RF-20** El sistema debe almacenar el precio y la duración estimada en minutos de cada servicio.
+- **RF-17** El sistema debe permitir al administrador registrar servicios en el catálogo.
+- **RF-18** El sistema debe permitir al administrador actualizar la información de un servicio existente.
+- **RF-19** El sistema debe permitir al administrador eliminar servicios del catálogo de forma lógica (soft delete), sin borrarlos físicamente de la base de datos.
+- **RF-29** El sistema debe exponer un endpoint para listar los servicios activos disponibles.
+- **RF-21** El sistema debe almacenar el precio y la duración estimada en minutos de cada servicio.
 
 ---
 
 ## 3.1.5 Gestión de Citas
 
-- **RF-21** El sistema debe permitir a los clientes programar citas seleccionando un barbero, uno o más servicios, fecha y hora disponible.
-- **RF-22** El sistema debe permitir cancelar una cita con al menos 24 horas de anticipación a la fecha y hora programada.
-- **RF-23** El sistema debe validar y prevenir la creación de citas superpuestas para el mismo barbero en el mismo horario.
-- **RF-24** El sistema debe almacenar el historial de todas las citas y permitir su consulta filtrada por cliente, barbero o fecha.
-- **RF-25** Cada cita debe estar asociada a un cliente, un barbero y uno o más servicios del catálogo.
+- **RF-22** El sistema debe permitir a los clientes programar citas seleccionando un barbero, uno o más servicios, fecha y hora disponible.
+- **RF-23** El sistema debe permitir cancelar una cita con al menos 24 horas de anticipación a la fecha y hora programada.
+- **RF-24** El sistema debe validar y prevenir la creación de citas superpuestas para el mismo barbero en el mismo horario.
+- **RF-25** El sistema debe almacenar el historial de todas las citas y permitir su consulta filtrada por cliente, barbero o fecha.
+- **RF-26** Cada cita debe estar asociada a un cliente, un barbero y uno o más servicios del catálogo.
 
 ---
 
 ## 3.1.6 Gestión de Pagos
 
-- **RF-26** El sistema debe registrar los pagos asociados a una cita, indicando el método utilizado: efectivo o PayPal.
-- **RF-27** El sistema debe almacenar el historial completo de todos los pagos realizados.
-- **RF-28** El sistema debe calcular automáticamente el costo total de una cita en función de los servicios seleccionados.
-- **RF-29** El sistema debe integrarse con la API REST de PayPal para procesar pagos en línea.
-- **RF-30** El sistema debe generar reportes básicos de ingresos filtrables por período de tiempo.
+- **RF-27** El sistema debe registrar los pagos asociados a una cita, indicando el método utilizado: efectivo o PayPal.
+- **RF-28** El sistema debe almacenar el historial completo de todos los pagos realizados.
+- **RF-29** El sistema debe calcular automáticamente el costo total de una cita en función de los servicios seleccionados.
+- **RF-30** El sistema debe integrarse con la API REST de PayPal para procesar pagos en línea.
+- **RF-31** El sistema debe generar reportes básicos de ingresos filtrables por período de tiempo.
 
 ---
 

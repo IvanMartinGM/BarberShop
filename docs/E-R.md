@@ -230,7 +230,6 @@ CITAS
 id                    INT      PK  AUTO_INCREMENT
 id_cliente            INT      FK → Clientes.id_cliente  NOT NULL
 id_barbero            INT      FK → Barberos.id           NOT NULL
-creada_por_usuario    INT      FK → Usuarios.id
 fecha_cita            DATE     NOT NULL
 hora_inicio           TIME     NOT NULL
 hora_fin              TIME     NOT NULL
@@ -337,6 +336,9 @@ BARBEROS_SERVICIOS
 ─────────────────────────
 id_barbero    INT  PK  FK → Barberos.id
 id_servicio   INT  PK  FK → Servicios.id
+estado            TINYINT(1) DEFAULT 1
+created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP
+updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP
 ```
 
 **Clave primaria compuesta:** `(id_barbero, id_servicio)`
@@ -385,7 +387,9 @@ CITAS_SERVICIOS
 id_cita                 INT            PK  FK → Citas.id
 id_servicio             INT            PK  FK → Servicios.id
 precio_aplicado         DECIMAL(8,2)   NOT NULL
-duracion_servicio       INT            NOT NULL
+hora_inicio_real        Timestamp NULL
+hora_fin_real           Timestamp NULL
+duracion_real_minutos   INT
 observaciones_servicio  TEXT
 ```
 
