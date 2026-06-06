@@ -6,22 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('barbers', function (Blueprint $table) {
+        Schema::create('barberos', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('id_usuario')->unique()->constrained('usuarios')->onDelete('restrict');
+            $table->enum('estado_disponibilidad', ['disponible', 'ocupado', 'inactivo'])->nullable();
+            $table->string('especialidad', 150)->nullable();
+            $table->text('biografia')->nullable();
+            $table->date('fecha_contratacion')->nullable();
+            $table->decimal('calificacion_promedio', 3, 2)->default(0.00);
+            $table->integer('experiencia_anos')->default(0);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('barbers');
+        Schema::dropIfExists('barberos');
     }
 };
