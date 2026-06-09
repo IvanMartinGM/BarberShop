@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('citas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_cliente')->constrained('clientes')->onDelete('restrict');
-            $table->foreignId('id_barbero')->constrained('barberos')->onDelete('restrict');
+            $table->foreignId('id_cliente')->constrained('clientes', 'id_cliente')->onDelete('restrict');
+   $table->foreignId('id_barbero')->constrained('barberos')->onDelete('restrict');
             $table->date('fecha_cita');
             $table->time('hora_inicio');
             $table->time('hora_fin');
