@@ -1,0 +1,128 @@
+@import "tailwindcss";
+@import "@fontsource/inter";
+@import "@fontsource/playfair-display";
+
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+
+
+@theme {
+
+    /* =======================================================
+       BARBERSHOP COLORS
+       ======================================================= */
+
+    --color-barber-red-50: #FEE2E2;
+    --color-barber-red-100: #FECACA;
+    --color-barber-red-200: #FCA5A5;
+    --color-barber-red-300: #F87171;
+    --color-barber-red-400: #EF4444;
+    --color-barber-red-500: #DC2626;
+    --color-barber-red-600: #DC2626;
+    --color-barber-red-700: #B91C1C;
+    --color-barber-red-800: #991B1B;
+    --color-barber-red-900: #7F1D1D;
+    --color-barber-red-950: #450A0A;
+
+    --color-barber-red: var(--color-barber-red-500);
+
+    /* =======================================================
+       NAVY
+       ======================================================= */
+
+    --color-navy-50: #EFF6FF;
+    --color-navy-100: #DBEAFE;
+    --color-navy-200: #BFDBFE;
+    --color-navy-300: #93C5FD;
+    --color-navy-400: #60A5FA;
+    --color-navy-500: #3B82F6;
+    --color-navy-600: #2563EB;
+    --color-navy-700: #1D4ED8;
+    --color-navy-800: #1E3A8A;
+    --color-navy-900: #1E3560;
+    --color-navy-950: #172554;
+
+    --color-navy: var(--color-navy-700);
+
+    /* =======================================================
+       CREAM
+       ======================================================= */
+
+    --color-cream-50: #FAFAF9;
+    --color-cream-100: #F5F5F4;
+    --color-cream-200: #E7E5E4;
+    --color-cream-300: #D6D3D1;
+    --color-cream-400: #A8A29E;
+    --color-cream-500: #78716C;
+    --color-cream-600: #57534E;
+    --color-cream-700: #44403C;
+    --color-cream-800: #292524;
+    --color-cream-900: #1C1917;
+
+    --color-cream: var(--color-cream-100);
+
+    /* =======================================================
+       INK
+       ======================================================= */
+
+    --color-ink-500: #78716C;
+    --color-ink-600: #57534E;
+    --color-ink-700: #44403C;
+    --color-ink-800: #292524;
+    --color-ink-900: #1C1917;
+    --color-ink-950: #0C0A09;
+
+    --color-ink: var(--color-ink-900);
+
+    /* =======================================================
+       TYPOGRAPHY
+       ======================================================= */
+
+    --font-sans: Inter, sans-serif;
+    --font-display: "Playfair Display", serif;
+
+    /* =======================================================
+       SHADOWS
+       ======================================================= */
+
+    --shadow-card:
+        0 1px 3px rgb(0 0 0 / 0.08),
+        0 1px 2px rgb(0 0 0 / 0.06);
+
+    --shadow-panel:
+        0 4px 12px rgb(0 0 0 / 0.08);
+
+    /* =======================================================
+   SYSTEM COLORS
+   ======================================================= */
+
+    --color-success: #16A34A;
+    --color-success-light: #DCFCE7;
+
+    --color-warning: #D97706;
+    --color-warning-light: #FEF3C7;
+
+    --color-danger: #DC2626;
+    --color-danger-light: #FEE2E2;
+
+    --color-info: #2563EB;
+    --color-info-light: #DBEAFE;
+
+    /*Radious*/
+    --radius-card: 0.75rem;
+    --radius-panel: 1rem;
+
+    /* Shadows */
+    --shadow-card:
+        0 1px 3px rgb(0 0 0 / 0.08),
+        0 1px 2px rgb(0 0 0 / 0.06);
+
+    --shadow-panel:
+        0 4px 12px rgb(0 0 0 / 0.08);
+
+    --shadow-elevated:
+        0 10px 25px rgb(0 0 0 / 0.12);
+
+}
