@@ -25,11 +25,35 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
+
+    protected $fillable = [
+        'nombres',
+        'primerApellido',
+        'segundoApellido',
+        'correo',
+        'contrasena',
+        'estado',
+        'nombreUsuario',
+        'fecha_registro',
+        'ultimo_acceso',
+        'genero',
+        'foto_perfil',
+        'celular',
+    ];
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'usuarios_roles', 'id_usuario', 'id_rol')
+        ->as('usuarios_roles')
+        ->withPivot('fecha_asignacion', 'estado')
+        ->withTimestamps();
+    }
+
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'contrasena' => 'hashed',
         ];
     }
 }

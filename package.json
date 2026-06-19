@@ -16,6 +16,8 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
+        "@fontsource/inter": "^5.2.8",
+        "@fontsource/playfair-display": "^5.2.8",
         "tailwindcss": "^4.3.1"
     }
 }
