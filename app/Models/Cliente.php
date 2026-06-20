@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cliente extends Model
 {
@@ -19,9 +21,17 @@ class Cliente extends Model
         'total_gastado',
     ];
 
-    public function user()
+    // Relacion inversa con el modelo User (Usuario)
+    // un cliente pertenece a un usuario, por lo que se define una relación belongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id_usuario');
+    }
+
+    //Relacion con el modelo Cita (un cliente puede tener muchas citas)
+    public function citas(): HasMany
+    {
+        return $this->hasMany(Cita::class, 'id_cliente');
     }
 }
 

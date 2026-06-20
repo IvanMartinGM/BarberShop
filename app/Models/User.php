@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -42,13 +45,25 @@ class User extends Authenticatable
         'celular',
     ];
 
-    public function roles(): BelongsToMany
+
+        public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'usuarios_roles', 'id_usuario', 'id_rol')
         ->as('usuarios_roles')
         ->withPivot('fecha_asignacion', 'estado')
         ->withTimestamps();
     }
+
+    public function cliente(): HasOne
+    {
+        return $this->hasOne(Cliente::class, 'id_usuario');
+    }
+
+    public function barbero(): HasOne
+    {
+        return $this->hasOne(Barbero::class, 'id_usuario');
+    }
+    
 
     protected function casts(): array
     {

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
+    protected $table = 'roles';
 
     protected $fillable = [
         'nombre',
@@ -20,7 +21,7 @@ class Role extends Model
     /* The relationships between the Role  and User with the pivot table usuarios_roles  */
         public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)
+        return $this->belongsToMany(User::class, 'usuarios_roles', 'id_usuario', 'id_rol')
         ->as('usuarios_roles')
         ->withPivot('fecha_asignacion', 'estado')
         ->withTimestamps();
