@@ -13,12 +13,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
 
- protected $table = 'usuarios';
+    protected $table = 'usuarios';
 
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -46,12 +46,20 @@ class User extends Authenticatable
     ];
 
 
-        public function roles(): BelongsToMany
+    protected function casts(): array
+    {
+        return [
+            'contrasena' => 'hashed',
+        ];
+    }
+
+
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'usuarios_roles', 'id_usuario', 'id_rol')
-        ->as('usuarios_roles')
-        ->withPivot('fecha_asignacion', 'estado')
-        ->withTimestamps();
+            ->as('usuarios_roles')
+            ->withPivot('fecha_asignacion', 'estado')
+            ->withTimestamps();
     }
 
     public function cliente(): HasOne
@@ -62,13 +70,5 @@ class User extends Authenticatable
     public function barbero(): HasOne
     {
         return $this->hasOne(Barbero::class, 'id_usuario');
-    }
-    
-
-    protected function casts(): array
-    {
-        return [
-            'contrasena' => 'hashed',
-        ];
     }
 }

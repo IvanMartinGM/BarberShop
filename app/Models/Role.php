@@ -21,9 +21,8 @@ class Role extends Model
     /* The relationships between the Role  and User with the pivot table usuarios_roles  */
         public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'usuarios_roles', 'id_usuario', 'id_rol')
+        return $this->belongsToMany(User::class, 'usuarios_roles', 'id_rol', 'id_usuario')
         ->as('usuarios_roles')
-        ->withPivot('fecha_asignacion', 'estado')
-        ->withTimestamps();
+        ->withPivot('fecha_asignacion', 'estado');
     }
 }

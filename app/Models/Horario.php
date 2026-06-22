@@ -19,20 +19,27 @@ class Horario extends Model
         'estado',
     ];
 
-    protected $casts = [
-        'estado' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'estado' => 'boolean',
+            'hora_inicio' => 'string',
+            'hora_fin' => 'string',
+        ];
+    }
 
     // N:M con Barberos via barberos_horarios
     public function barberos(): BelongsToMany
     {
         return $this->belongsToMany(Barbero::class, 'barberos_horarios', 'id_horario', 'id_barbero')
-            ->withPivot(['fecha_asignacion', 'estado']);
+            ->as('barberos_horarios')
+            ->withPivot('fecha_asignacion', 'estado');
     }
 
     // N:M con DiasSemana via horarios_dias_semana
     public function diasSemana(): BelongsToMany
     {
-        return $this->belongsToMany(DiaSemana::class, 'horarios_dias_semana', 'id_horario', 'id_dia');
+        return $this->belongsToMany(DiaSemana::class, 'horarios_dias_semana', 'id_horario', 'id_dia')
+            ->as('horarios_dias_semana');
     }
 }

@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cliente extends Model
 {
+    // Especificamos el nombre de la tabla asociada a este modelo
     protected $table = 'clientes';
-
+    
+    //Especificamos los campos que se pueden asignar masivamente (mass assignment)
     protected $fillable = [
+        'id_usuario',
         'fecha_nacimiento',
         'ultima_visita',
         'tipo_cliente',
@@ -33,5 +36,18 @@ class Cliente extends Model
     {
         return $this->hasMany(Cita::class, 'id_cliente');
     }
+
+    protected function casts(): array {
+      return [
+          'fecha_nacimiento' => 'date',
+          'ultima_visita' => 'datetime',
+          'puntos_fidelidad' => 'integer',
+          'total_visitas' => 'integer',
+          'total_gastado' => 'decimal:2',
+          'acepta_notificaciones' => 'boolean',
+      ];
+  }
+
+
 }
 

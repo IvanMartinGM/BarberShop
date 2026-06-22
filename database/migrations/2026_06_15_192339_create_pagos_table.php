@@ -17,8 +17,7 @@ return new class extends Migration
             $table->enum('estado_pago', ['pendiente', 'pagado', 'cancelado', 'reembolsado'])->default('pendiente');
             $table->string('referencia_transaccion', 150)->nullable();
             $table->string('concepto', 255)->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamps();
         });
     }
 
