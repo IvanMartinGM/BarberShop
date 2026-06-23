@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 //Public Routes without authentication
@@ -19,10 +20,8 @@ Route::get('/contacto', function () {
 })->name('contacto');
 
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
-
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/register', function () {
     return view('register');

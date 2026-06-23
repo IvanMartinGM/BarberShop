@@ -20,6 +20,8 @@ class User extends Authenticatable
 
     protected $table = 'usuarios';
 
+    public $timestamps = false;
+    
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
@@ -32,10 +34,10 @@ class User extends Authenticatable
 
     protected $fillable = [
         'nombres',
-        'primerApellido',
-        'segundoApellido',
-        'correo',
-        'contrasena',
+        'primer_Apellido',
+        'segundo_Apellido',
+        'email',
+        'password',
         'estado',
         'nombreUsuario',
         'fecha_registro',
@@ -49,7 +51,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'contrasena' => 'hashed',
+            'password' => 'hashed',
         ];
     }
 

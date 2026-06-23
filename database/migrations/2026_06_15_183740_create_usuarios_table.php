@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('nombres', 100);
             $table->string('primer_apellido', 60);
             $table->string('segundo_apellido', 60)->nullable();
-            $table->string('correo', 150)->unique();
-            $table->string('contrasena', 255);
+            $table->string('email', 150)->unique();
+            $table->string('password', 255);
             $table->tinyInteger('estado')->default(1);
             $table->string('nombre_usuario', 60)->unique();
             $table->timestamp('fecha_registro')->useCurrent();
