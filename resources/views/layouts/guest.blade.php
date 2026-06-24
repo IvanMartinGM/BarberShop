@@ -49,7 +49,7 @@
                            class="text-ink hover:text-barber-red transition-colors">
                             Dashboard
                         </a>
-                        <form method="POST" action="#logout" class="inline">
+                        <form method="POST" action="{{ route('logout') }}"  class="inline">
                             @csrf
                             <button type="submit"
                                     class="text-ink hover:text-barber-red transition-colors">
@@ -61,7 +61,7 @@
                            class="text-ink hover:text-barber-red transition-colors">
                             Iniciar Sesión
                         </a>
-                        <a href="{{ route('register') }}"
+                        <a href="{{ route('cliente_register') }}"
                            class="bg-barber-red text-white px-4 py-2 rounded-md hover:bg-barber-red-600 transition-colors">
                             Registrarse
                         </a>

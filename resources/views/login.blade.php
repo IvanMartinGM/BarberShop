@@ -129,7 +129,7 @@
                 <!-- Link a Registro -->
                 <p class="text-center text-ink-600">
                     ¿No tienes cuenta? 
-                    <a href="{{ route('register') }}" class="text-barber-red font-bold hover:text-barber-red-600">
+                    <a href="{{ route('cliente_register') }}" class="text-barber-red font-bold hover:text-barber-red-600">
                         Regístrate aquí
                     </a>
                 </p>

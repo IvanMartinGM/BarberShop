@@ -84,6 +84,7 @@ class User extends Authenticatable
         return $userfullname;
     }
 
+    /* This function checks if the user has a specific role */
     public function hasRole(string $role): bool
     {
         return $this->roles()->where('nombre', $role)
@@ -91,17 +92,17 @@ class User extends Authenticatable
             ->exists();
     }
 
-    //A function to get all the roles of the user that are active in an array
+    /* This function gets all the roles of the user that are active in an array */
     public function getActiveRoles(): array
     {
         $roles = $this->roles()->wherePivot('estado', 1)->pluck('nombre');
         return $roles->toArray();
     }
 
-    // A function to check if the user has any active roles
-    public function hasActiveRoles(): bool{
-
-    return $this->roles()->wherePivot('estado', 1)->exists();
+    /* This function checks if the user has any active roles */
+    public function hasActiveRoles(): bool
+    {
+        return $this->roles()->wherePivot('estado', 1)->exists();
 
     } 
 

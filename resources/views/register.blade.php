@@ -35,7 +35,7 @@
                 </div>
 
                 <!-- Formulario de Registro -->
-                <form method="POST" action="{{ route('register') }}" class="space-y-6">
+                <form method="POST" action="{{ route('cliente_store') }}" class="space-y-6">
 
                     @csrf
 
@@ -63,37 +63,37 @@
 
                         <!-- Primer Apellido -->
                         <div>
-                            <label for="primerApellido" class="block text-sm font-semibold text-navy mb-2">
+                            <label for="primer_apellido" class="block text-sm font-semibold text-navy mb-2">
                                 Primer Apellido *
                             </label>
                             <input 
                                 type="text" 
-                                id="primerApellido" 
-                                name="primerApellido" 
-                                value="{{ old('primerApellido') }}"
+                                id="primer_apellido" 
+                                name="primer_apellido" 
+                                value="{{ old('primer_apellido') }}"
                                 required
                                 placeholder="Pérez"
                                 class="w-full px-4 py-3 rounded-lg border-2 border-cream-200 focus:border-barber-red focus:outline-none transition-colors text-ink"
                             >
-                            @error('primerApellido')
+                            @error('primer_apellido')
                                 <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <!-- Segundo Apellido -->
                         <div>
-                            <label for="segundoApellido" class="block text-sm font-semibold text-navy mb-2">
+                            <label for="segundo_apellido" class="block text-sm font-semibold text-navy mb-2">
                                 Segundo Apellido
                             </label>
                             <input 
                                 type="text" 
-                                id="segundoApellido" 
-                                name="segundoApellido" 
-                                value="{{ old('segundoApellido') }}"
+                                id="segundo_apellido" 
+                                name="segundo_apellido" 
+                                value="{{ old('segundo_apellido') }}"
                                 placeholder="García"
                                 class="w-full px-4 py-3 rounded-lg border-2 border-cream-200 focus:border-barber-red focus:outline-none transition-colors text-ink"
                             >
-                            @error('segundoApellido')
+                            @error('segundo_apellido')
                                 <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -120,38 +120,38 @@
 
                     <!-- Correo Electrónico (Full Width) -->
                     <div>
-                        <label for="correo" class="block text-sm font-semibold text-navy mb-2">
+                        <label for="email" class="block text-sm font-semibold text-navy mb-2">
                             Correo Electrónico *
                         </label>
                         <input 
                             type="email" 
-                            id="correo" 
-                            name="correo" 
-                            value="{{ old('correo') }}"
+                            id="email" 
+                            name="email" 
+                            value="{{ old('email') }}"
                             required
                             placeholder="tu@email.com"
                             class="w-full px-4 py-3 rounded-lg border-2 border-cream-200 focus:border-barber-red focus:outline-none transition-colors text-ink"
                         >
-                        @error('correo')
+                        @error('email')
                             <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Nombre de Usuario (Full Width) -->
                     <div>
-                        <label for="nombreUsuario" class="block text-sm font-semibold text-navy mb-2">
+                        <label for="nombre_usuario" class="block text-sm font-semibold text-navy mb-2">
                             Nombre de Usuario *
                         </label>
                         <input 
                             type="text" 
-                            id="nombreUsuario" 
-                            name="nombreUsuario" 
-                            value="{{ old('nombreUsuario') }}"
+                            id="nombre_usuario" 
+                            name="nombre_usuario" 
+                            value="{{ old('nombre_usuario') }}"
                             required
                             placeholder="juanperez123"
                             class="w-full px-4 py-3 rounded-lg border-2 border-cream-200 focus:border-barber-red focus:outline-none transition-colors text-ink"
                         >
-                        @error('nombreUsuario')
+                        @error('nombre_usuario')
                             <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -200,65 +200,38 @@
 
                     <!-- Contraseña -->
                     <div>
-                        <label for="contrasena" class="block text-sm font-semibold text-navy mb-2">
+                        <label for="password" class="block text-sm font-semibold text-navy mb-2">
                             Contraseña *
                         </label>
                         <input 
                             type="password" 
-                            id="contrasena" 
-                            name="contrasena" 
+                            id="password" 
+                            name="password" 
                             required
                             placeholder="••••••••"
                             class="w-full px-4 py-3 rounded-lg border-2 border-cream-200 focus:border-barber-red focus:outline-none transition-colors text-ink"
                         >
-                        @error('contrasena')
+                        @error('password')
                             <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Confirmar Contraseña -->
                     <div>
-                        <label for="contrasena_confirmation" class="block text-sm font-semibold text-navy mb-2">
+                        <label for="password_confirmation" class="block text-sm font-semibold text-navy mb-2">
                             Confirmar Contraseña *
                         </label>
                         <input 
                             type="password" 
-                            id="contrasena_confirmation" 
-                            name="contrasena_confirmation" 
+                            id="password_confirmation" 
+                            name="password_confirmation" 
                             required
                             placeholder="••••••••"
                             class="w-full px-4 py-3 rounded-lg border-2 border-cream-200 focus:border-barber-red focus:outline-none transition-colors text-ink"
                         >
-                    </div>
-
-                    <!-- Checkbox Notificaciones y Términos -->
-                    <div class="space-y-3">
-                        <label class="flex items-start">
-                            <input 
-                                type="checkbox" 
-                                name="acepta_notificaciones" 
-                                id="acepta_notificaciones"
-                                value="1"
-                                checked
-                                class="w-4 h-4 mt-1 accent-barber-red rounded"
-                            >
-                            <span class="ml-3 text-sm text-ink-600">
-                                Quiero recibir ofertas y promociones especiales de BarberShop
-                            </span>
-                        </label>
-
-                        <label class="flex items-start">
-                            <input 
-                                type="checkbox" 
-                                name="terminos" 
-                                id="terminos"
-                                required
-                                class="w-4 h-4 mt-1 accent-barber-red rounded"
-                            >
-                            <span class="ml-3 text-sm text-ink-600">
-                                Acepto los <span class="font-semibold text-navy">términos y condiciones</span> y la <span class="font-semibold text-navy">política de privacidad</span> *
-                            </span>
-                        </label>
+                        @error('password_confirmation')
+                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Botones -->
