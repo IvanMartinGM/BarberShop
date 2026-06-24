@@ -29,7 +29,11 @@ Este documento sirve como referencia principal para el desarrollador, y establec
 
 ## 1.2 Alcance
 
-El Sistema de Gestión para Barbería es una aplicación web monolítica desarrollada con **Laravel 13**, siguiendo el patrón de arquitectura **MVC (Modelo-Vista-Controlador)**. La capa de presentación se construye con **Blade** (motor de plantillas de Laravel) y **Tailwind CSS** como framework de estilos, utilizado tanto en las vistas públicas como en el panel administrativo para barberos, administradores y clientes autenticados. El módulo de autenticación se basa en **Laravel Breeze** (stack Blade), que provee el flujo de inicio de sesión, registro, recuperación de contraseña y gestión de perfil sobre el cual se construye el control de acceso por roles. Las gráficas y reportes visuales del panel se implementan mediante **Chart.js**.
+El Sistema de Gestión para Barbería es una aplicación web monolítica desarrollada con **Laravel 13**, siguiendo el patrón de arquitectura **MVC (Modelo-Vista-Controlador)**. La capa de presentación se construye con **Blade** (motor de plantillas de Laravel) y **Tailwind CSS** como framework de estilos, utilizado tanto en las vistas públicas como en el panel administrativo para barberos, administradores y clientes autenticados.  
+
+El módulo de autenticación sera implementado manualmente sobre el sistema de sesiones de Laravel, incluyendo las funcionalidades de incio de sesion, registro y cierre de session. El control de acceso  se gestionara  mediante middlewares personalizados basados en roles. 
+
+Las gráficas y reportes visuales del panel administrativo se implementan mediante **Chart.js**.
 
 El sistema busca optimizar el proceso de agendado de citas y el flujo de trabajo general de la barbería, centralizando su información administrativa en una sola aplicación.
 
@@ -43,6 +47,7 @@ El sistema permitirá:
 - Gestión de horarios de barberos
 - Registro de pagos en efectivo o mediante PayPal
 - Control de acceso basado en roles
+- Generacion de reportes básicos de ingresos
 
 ---
 
@@ -59,7 +64,6 @@ El sistema permitirá:
 | Eloquent | ORM incluido en Laravel para interactuar con la base de datos |
 | Blade | Motor de plantillas de Laravel para construir las vistas |
 | Tailwind CSS | Framework de utilidades CSS utilizado para construir la interfaz del panel y las vistas públicas |
-| Laravel Breeze | Paquete oficial de Laravel que provee el andamiaje de autenticación (login, registro, recuperación de contraseña, perfil) basado en sesiones, sobre el stack Blade |
 | Chart.js | Librería JavaScript utilizada para renderizar gráficas en el dashboard y los reportes de ingresos |
 | RBAC | Role-Based Access Control — control de acceso basado en roles |
 | Cliente | Usuario que agenda servicios en la barbería |
@@ -77,7 +81,6 @@ El sistema permitirá:
 - Documentación oficial de Laravel 13: https://laravel.com/docs
 - Documentación oficial de Eloquent ORM: https://laravel.com/docs/eloquent
 - Documentación oficial de Blade: https://laravel.com/docs/blade
-- Documentación oficial de Laravel Breeze: https://laravel.com/docs/starter-kits#breeze
 - Documentación oficial de Tailwind CSS: https://tailwindcss.com/docs
 - Documentación oficial de Chart.js: https://www.chartjs.org/docs/latest/
 - Documentación oficial de MariaDB: https://mariadb.com/kb/en/
@@ -162,7 +165,7 @@ Las principales funciones del sistema son:
 - La aplicación debe seguir el patrón de arquitectura **MVC**.
 - La interacción con la base de datos debe realizarse a través de **Eloquent ORM**.
 - La interfaz de usuario debe construirse con **Blade** y **Tailwind CSS**.
-- La autenticación debe implementarse mediante **Laravel Breeze** (stack Blade), sobre el sistema de **sesiones** de Laravel.
+- La autenticación debe implementarse manualmente sobre el sistema de **sesiones** de Laravel y el control de acceso debe resolverse mediante middlewares personalizados basados en roles.
 - La base de datos utilizada será **MariaDB**.
 - La integración de pagos en línea se realizará exclusivamente mediante la API REST de PayPal, consumida desde el backend de Laravel.
 - El proyecto debe completarse en un plazo máximo de 2 meses.
@@ -191,57 +194,56 @@ Las principales funciones del sistema son:
 - **RF-03** El sistema debe restringir el acceso a todas las vistas y rutas protegidas únicamente a usuarios con sesión activa, mediante middleware `auth`.
 - **RF-04** El sistema debe implementar control de acceso basado en roles (RBAC) mediante middleware, diferenciando entre administrador, barbero y cliente.
 - **RF-05** El sistema debe proporcionar una opción de cierre de sesión que invalide la sesión activa del usuario.
-- **RF-06** El sistema debe permitir la recuperación de contraseña mediante un enlace enviado al correo electrónico registrado.
 
 ---
 
 ## 3.1.2 Gestión de Usuarios y Roles
 
-- **RF-07** El sistema debe permitir al administrador registrar nuevos usuarios con rol de administrador o barbero desde el panel.
-- **RF-08** El sistema debe permitir a cualquier persona registrarse en la plataforma como cliente mediante un formulario público de registro.
-- **RF-09** El sistema debe permitir al administrador actualizar la información de cualquier usuario.
-- **RF-10** El sistema debe permitir al administrador asignar uno o más roles a un usuario, con la restricción de que el rol de cliente es exclusivo y no puede combinarse con ningún otro rol.
-- **RF-11** El sistema debe limitar las vistas y opciones de menú disponibles según los roles del usuario autenticado. Si un usuario posee múltiples roles, el sistema debe otorgarle las funcionalidades combinadas de todos sus roles activos.
+- **RF-06** El sistema debe permitir al administrador registrar nuevos usuarios con rol de administrador o barbero desde el panel.
+- **RF-07** El sistema debe permitir a cualquier persona registrarse en la plataforma como cliente mediante un formulario público de registro.
+- **RF-08** El sistema debe permitir al administrador actualizar la información de cualquier usuario.
+- **RF-09** El sistema debe permitir al administrador asignar uno o más roles a un usuario, con la restricción de que el rol de cliente es exclusivo y no puede combinarse con ningún otro rol.
+- **RF-10** El sistema debe limitar las vistas y opciones de menú disponibles según los roles del usuario autenticado. Si un usuario posee múltiples roles, el sistema debe otorgarle las funcionalidades combinadas de todos sus roles activos.
 
 ---
 
 ## 3.1.3 Gestión de Barberos
 
-- **RF-12** El sistema debe permitir registrar barberos con su información personal y de contacto.
-- **RF-13** El sistema debe permitir actualizar la información de un barbero existente.
-- **RF-14** El sistema debe mostrar una vista con el listado de barberos disponibles.
-- **RF-15** El sistema debe permitir al administrador configurar los horarios de trabajo de cada barbero.
-- **RF-16** El sistema debe permitir al barbero seleccionar, desde el catálogo general, los servicios que él ofrece y realiza.
+- **RF-11** El sistema debe permitir registrar barberos con su información personal y de contacto.
+- **RF-12** El sistema debe permitir actualizar la información de un barbero existente.
+- **RF-13** El sistema debe mostrar una vista con el listado de barberos disponibles.
+- **RF-14** El sistema debe permitir al administrador configurar los horarios de trabajo de cada barbero.
+- **RF-15** El sistema debe permitir al barbero seleccionar, desde el catálogo general, los servicios que él ofrece y realiza.
 
 ---
 
 ## 3.1.4 Gestión de Servicios
 
-- **RF-17** El sistema debe permitir al administrador registrar servicios en el catálogo.
-- **RF-18** El sistema debe permitir al administrador actualizar la información de un servicio existente.
-- **RF-19** El sistema debe permitir al administrador eliminar servicios del catálogo de forma lógica (soft delete), sin borrarlos físicamente de la base de datos.
-- **RF-20** El sistema debe mostrar una vista con los servicios activos disponibles.
-- **RF-21** El sistema debe almacenar el precio y la duración estimada en minutos de cada servicio.
+- **RF-16** El sistema debe permitir al administrador registrar servicios en el catálogo.
+- **RF-17** El sistema debe permitir al administrador actualizar la información de un servicio existente.
+- **RF-18** El sistema debe permitir al administrador eliminar servicios del catálogo de forma lógica (soft delete), sin borrarlos físicamente de la base de datos.
+- **RF-19** El sistema debe mostrar una vista con los servicios activos disponibles.
+- **RF-20** El sistema debe almacenar el precio y la duración estimada en minutos de cada servicio.
 
 ---
 
 ## 3.1.5 Gestión de Citas
 
-- **RF-22** El sistema debe permitir a los clientes programar citas seleccionando un barbero, uno o más servicios, fecha y hora disponible, mediante un formulario.
-- **RF-23** El sistema debe permitir cancelar una cita con al menos 24 horas de anticipación a la fecha y hora programada.
-- **RF-24** El sistema debe validar y prevenir la creación de citas superpuestas para el mismo barbero en el mismo horario.
-- **RF-25** El sistema debe almacenar el historial de todas las citas y permitir su consulta filtrada por cliente, barbero o fecha desde el panel.
-- **RF-26** Cada cita debe estar asociada a un cliente, un barbero y uno o más servicios del catálogo.
+- **RF-21** El sistema debe permitir a los clientes programar citas seleccionando un barbero, uno o más servicios, fecha y hora disponible, mediante un formulario.
+- **RF-22** El sistema debe permitir cancelar una cita con al menos 24 horas de anticipación a la fecha y hora programada.
+- **RF-23** El sistema debe validar y prevenir la creación de citas superpuestas para el mismo barbero en el mismo horario.
+- **RF-24** El sistema debe almacenar el historial de todas las citas y permitir su consulta filtrada por cliente, barbero o fecha desde el panel.
+- **RF-25** Cada cita debe estar asociada a un cliente, un barbero y uno o más servicios del catálogo.
 
 ---
 
 ## 3.1.6 Gestión de Pagos
 
-- **RF-27** El sistema debe registrar los pagos asociados a una cita, indicando el método utilizado: efectivo o PayPal.
-- **RF-28** El sistema debe almacenar el historial completo de todos los pagos realizados.
-- **RF-29** El sistema debe calcular automáticamente el costo total de una cita en función de los servicios seleccionados.
-- **RF-30** El sistema debe integrarse con la API REST de PayPal, desde el backend de Laravel, para procesar pagos en línea.
-- **RF-31** El sistema debe generar reportes básicos de ingresos filtrables por período de tiempo, mostrados en una vista del panel mediante gráficas implementadas con Chart.js.
+- **RF-26** El sistema debe registrar los pagos asociados a una cita, indicando el método utilizado: efectivo o PayPal.
+- **RF-27** El sistema debe almacenar el historial completo de todos los pagos realizados.
+- **RF-28** El sistema debe calcular automáticamente el costo total de una cita en función de los servicios seleccionados.
+- **RF-29** El sistema debe integrarse con la API REST de PayPal, desde el backend de Laravel, para procesar pagos en línea.
+- **RF-30** El sistema debe generar reportes básicos de ingresos filtrables por período de tiempo, mostrados en una vista del panel mediante gráficas implementadas con Chart.js.
 
 ---
 
@@ -299,7 +301,7 @@ Las principales funciones del sistema son:
 | Motor de plantillas | Blade |
 | Estilos / UI | Tailwind CSS |
 | Gráficas y reportes | Chart.js |
-| Autenticación | Laravel Breeze (stack Blade), sobre sesiones de Laravel |
+| Autenticación | Autenticación personalizada basada en sesiones de Laravel; control de acceso mediante middlewares personalizados |
 | Base de datos | MariaDB |
 | Pagos en línea | API REST de PayPal, consumida desde el backend |
 | Servidor web | Servidor de desarrollo de Laravel (`php artisan serve`) / Nginx o Apache con PHP-FPM en producción |
@@ -346,8 +348,8 @@ El proyecto tiene una duración estimada de 8 semanas distribuidas de la siguien
 | Fase | Semanas | Actividades principales |
 |------|---------|------------------------|
 | Planeación | 1 | Cierre del SRS, configuración del entorno de desarrollo y repositorio. |
-| Diseño | 1 – 2 | Modelo relacional (ERD), diseño de rutas y vistas, configuración de Laravel Breeze y Tailwind CSS. |
-| Desarrollo — Autenticación y Roles | 2 – 3 | Migraciones, modelos Eloquent, autenticación con sesiones (Laravel Breeze), middlewares de roles. |
+| Diseño | 1 – 2 | Modelo relacional (ERD), diseño de rutas y vistas, configuración de Tailwind CSS. |
+| Desarrollo — Autenticación y Roles | 2 – 3 | Migraciones, modelos Eloquent, autenticación personalizada con sesiones y middlewares de      roles. |
 | Desarrollo — Módulos CRUD | 3 – 5 | Controladores y vistas Blade/Tailwind CSS para barberos, servicios, horarios y clientes. |
 | Desarrollo — Citas y Pagos | 5 – 7 | Lógica de agendado de citas, validación de traslapes, pagos en efectivo y PayPal. |
 | Pruebas | 7 | Pruebas funcionales, validación de formularios y corrección de errores. |

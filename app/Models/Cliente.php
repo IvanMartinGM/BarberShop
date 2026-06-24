@@ -10,6 +10,7 @@ class Cliente extends Model
 {
     // Especificamos el nombre de la tabla asociada a este modelo
     protected $table = 'clientes';
+    public $timestamps = false;
     
     //Especificamos los campos que se pueden asignar masivamente (mass assignment)
     protected $fillable = [

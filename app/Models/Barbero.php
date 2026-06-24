@@ -11,6 +11,8 @@ class Barbero extends Model
 {
     protected $table = 'barberos';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id_usuario',
         'estado_disponibilidad',

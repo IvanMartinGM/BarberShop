@@ -45,11 +45,11 @@
                 <!-- Auth Links -->
                 <div class="flex items-center gap-4">
                     @auth
-                        <a href="{{ route('dashboard') }}"
+                        <a href="#dashboard"
                            class="text-ink hover:text-barber-red transition-colors">
                             Dashboard
                         </a>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                        <form method="POST" action="#logout" class="inline">
                             @csrf
                             <button type="submit"
                                     class="text-ink hover:text-barber-red transition-colors">

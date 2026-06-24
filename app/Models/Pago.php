@@ -20,14 +20,23 @@ class Pago extends Model
     ];
 
 
+    protected function casts(): array
+    {
+        return [
+            'monto' => 'decimal:2',
+            'fecha_pago' => 'datetime',
+        ];
+    }
+
     //Relacion inversa con el modelo Cita (Una cita puede tener un pago, pero un pago pertenece a una cita)
-    public function cita(): belongsTo{
-        return $this->belongsTo(Cita::class, 'id_cita');    
+    public function cita(): BelongsTo
+    {
+        return $this->BelongsTo(Cita::class, 'id_cita');
     }
 
     //Relacion inversa con el modelo Metodo_pago (Un metodo de pago puede tener muchos pagos, pero un pago pertenece a un metodo de pago)
-    public function metodoPago(): belongsTo{
-        return $this->belongsTo(MetodoPago::class, 'id_metodo_pago');
+    public function metodoPago(): BelongsTo
+    {
+        return $this->BelongsTo(MetodoPago::class, 'id_metodo_pago');
     }
-
 }

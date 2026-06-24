@@ -19,10 +19,17 @@ class Role extends Model
     ];
 
     /* The relationships between the Role  and User with the pivot table usuarios_roles  */
-        public function users(): BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'usuarios_roles', 'id_rol', 'id_usuario')
-        ->as('usuarios_roles')
-        ->withPivot('fecha_asignacion', 'estado');
+            ->as('usuarios_roles')
+            ->withPivot('fecha_asignacion', 'estado');
+    }
+
+    // A function to get all the roles in the database
+    public function ActiveRoles(): array
+    {
+        $rolesExist = Role::pluck('nombre', 'id')->toArray();
+        return $rolesExist;
     }
 }
