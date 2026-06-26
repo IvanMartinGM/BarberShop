@@ -4,71 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     @vite('resources/css/app.css')
+
     <title>@yield('title', config('app.name'))</title>
 </head>
 
-<body class="bg-cream text-ink font-sans min-h-screen flex flex-col">
+<body class="min-h-screen bg-cream text-ink font-sans antialiased flex flex-col">
 
     <!-- ==================================================
          NAVBAR
          ================================================== -->
 
-    <header class="sticky top-0 z-50 bg-white border-b border-cream-200 shadow-card">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-cream-200 shadow-card">
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
-            <div class="h-16 flex items-center justify-between">
+            <!-- Top navbar -->
+            <div class="min-h-16 flex items-center justify-between gap-4 py-3 md:py-0">
 
                 <!-- Logo -->
                 <a href="{{ route('home') }}"
-                   class="font-display text-2xl font-bold text-navy hover:text-barber-red transition-colors">
-                    ✂️ BARBERSHOP
+                   class="flex items-center gap-2 min-w-0 font-display font-bold text-navy hover:text-barber-red transition-colors">
+
+                    <span class="text-xl sm:text-2xl leading-none">
+                        ✂️
+                    </span>
+
+                    <span class="text-xl sm:text-2xl truncate">
+                        BARBERSHOP
+                    </span>
                 </a>
 
-                <!-- Navigation Desktop -->
-                <nav class="hidden md:flex items-center gap-8">
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-6 lg:gap-8">
                     <a href="{{ route('home') }}"
-                       class="text-ink hover:text-barber-red transition-colors">
+                       class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                         Inicio
                     </a>
+
                     <a href="{{ route('servicios') }}"
-                       class="text-ink hover:text-barber-red transition-colors">
+                       class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                         Servicios
                     </a>
+
                     <a href="{{ route('contacto') }}"
-                       class="text-ink hover:text-barber-red transition-colors">
+                       class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                         Contacto
                     </a>
                 </nav>
 
-                <!-- Auth Links -->
-                <div class="flex items-center gap-4">
+                <!-- Desktop Auth Links -->
+                <div class="hidden md:flex items-center gap-3">
                     @auth
-                        <a href="#dashboard"
-                           class="text-ink hover:text-barber-red transition-colors">
+                        <a href="{{ route('dashboard') }}"
+                           class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                             Dashboard
                         </a>
-                        <form method="POST" action="{{ route('logout') }}"  class="inline">
+
+                        <form method="POST" action="{{ route('logout') }}">
                             @csrf
+
                             <button type="submit"
-                                    class="text-ink hover:text-barber-red transition-colors">
+                                    class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                                 Salir
                             </button>
                         </form>
                     @else
                         <a href="{{ route('login') }}"
-                           class="text-ink hover:text-barber-red transition-colors">
+                           class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                             Iniciar Sesión
                         </a>
+
                         <a href="{{ route('cliente_register') }}"
-                           class="bg-barber-red text-white px-4 py-2 rounded-md hover:bg-barber-red-600 transition-colors">
+                           class="inline-flex items-center justify-center rounded-md bg-barber-red px-4 py-2 text-sm font-semibold text-white shadow-card hover:bg-barber-red-600 transition-colors">
                             Registrarse
                         </a>
                     @endauth
                 </div>
 
+                <!-- Mobile Auth Links -->
+                <div class="flex md:hidden items-center gap-2 shrink-0">
+                    @auth
+                        <a href="{{ route('dashboard') }}"
+                           class="rounded-md bg-cream-100 px-3 py-2 text-xs font-semibold text-navy hover:bg-cream-200 transition-colors">
+                            Panel
+                        </a>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+
+                            <button type="submit"
+                                    class="rounded-md bg-barber-red px-3 py-2 text-xs font-semibold text-white hover:bg-barber-red-600 transition-colors">
+                                Salir
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}"
+                           class="rounded-md bg-cream-100 px-3 py-2 text-xs font-semibold text-navy hover:bg-cream-200 transition-colors">
+                            Entrar
+                        </a>
+
+                        <a href="{{ route('cliente_register') }}"
+                           class="rounded-md bg-barber-red px-3 py-2 text-xs font-semibold text-white hover:bg-barber-red-600 transition-colors">
+                            Registro
+                        </a>
+                    @endauth
+                </div>
+
             </div>
+
+            <!-- Mobile Navigation -->
+            <nav class="md:hidden border-t border-cream-200 py-3">
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <a href="{{ route('home') }}"
+                       class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
+                        Inicio
+                    </a>
+
+                    <a href="{{ route('servicios') }}"
+                       class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
+                        Servicios
+                    </a>
+
+                    <a href="{{ route('contacto') }}"
+                       class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
+                        Contacto
+                    </a>
+                </div>
+            </nav>
 
         </div>
 
@@ -86,29 +150,57 @@
          FOOTER
          ================================================== -->
 
-    <footer class="bg-navy text-cream mt-16">
+    <footer class="bg-navy text-cream">
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
 
                 <div>
-                    <h3 class="font-display text-lg mb-4">BARBERSHOP</h3>
-                    <p class="text-cream-200 text-sm">Tu barbería de confianza desde 2024.</p>
+                    <h3 class="font-display text-xl font-bold mb-3">
+                        BARBERSHOP
+                    </h3>
+
+                    <p class="text-sm leading-6 text-cream-200 max-w-xs">
+                        Tu barbería de confianza desde 2024.
+                    </p>
                 </div>
 
                 <div>
-                    <h4 class="font-semibold mb-3">Navegación</h4>
+                    <h4 class="font-semibold mb-3">
+                        Navegación
+                    </h4>
+
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('home') }}" class="text-cream-200 hover:text-white">Inicio</a></li>
-                        <li><a href="{{ route('servicios') }}" class="text-cream-200 hover:text-white">Servicios</a></li>
-                        <li><a href="{{ route('contacto') }}" class="text-cream-200 hover:text-white">Contacto</a></li>
+                        <li>
+                            <a href="{{ route('home') }}"
+                               class="text-cream-200 hover:text-white transition-colors">
+                                Inicio
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('servicios') }}"
+                               class="text-cream-200 hover:text-white transition-colors">
+                                Servicios
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('contacto') }}"
+                               class="text-cream-200 hover:text-white transition-colors">
+                                Contacto
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="font-semibold mb-3">Horario</h4>
-                    <ul class="space-y-2 text-sm text-cream-200">
+                    <h4 class="font-semibold mb-3">
+                        Horario
+                    </h4>
+
+                    <ul class="space-y-2 text-sm leading-6 text-cream-200">
                         <li>Lunes - Viernes: 9:00 - 19:00</li>
                         <li>Sábado: 9:00 - 17:00</li>
                         <li>Domingo: Cerrado</li>
@@ -116,8 +208,11 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold mb-3">Contacto</h4>
-                    <ul class="space-y-2 text-sm text-cream-200">
+                    <h4 class="font-semibold mb-3">
+                        Contacto
+                    </h4>
+
+                    <ul class="space-y-2 text-sm leading-6 text-cream-200">
                         <li>📞 +34 123 456 789</li>
                         <li>📧 info@barbershop.es</li>
                         <li>📍 Calle Principal, 123</li>
@@ -126,8 +221,8 @@
 
             </div>
 
-            <div class="border-t border-navy-700 pt-8">
-                <p class="text-center text-sm text-cream-200">
+            <div class="mt-10 border-t border-navy-700 pt-6">
+                <p class="text-center text-xs sm:text-sm text-cream-200">
                     © {{ date('Y') }} BarberShop. Todos los derechos reservados.
                 </p>
             </div>
