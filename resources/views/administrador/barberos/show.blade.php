@@ -16,7 +16,7 @@
             </h2>
 
             <p class="mt-2 text-sm text-ink-600">
-                Consulta la información personal y profesional del barbero.
+                Consulta toda la información administrativa y profesional del barbero.
             </p>
         </div>
 
@@ -27,7 +27,7 @@
                 Volver
             </a>
 
-            <a href="{{ route('barbero.edit', ['id' => $barbero->id]) }}"
+            <a href="{{ route('barbero.edit', $barbero->id) }}"
                class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
                 Editar barbero
             </a>
@@ -51,6 +51,7 @@
                 <h3 class="mt-4 font-display text-2xl font-bold text-white">
                     {{ $barbero->user?->nombres ?? 'Sin nombre' }}
                     {{ $barbero->user?->primer_apellido ?? '' }}
+                    {{ $barbero->user?->segundo_apellido ?? '' }}
                 </h3>
 
                 <p class="mt-1 text-sm text-cream-200">
@@ -61,9 +62,10 @@
 
             <div class="p-6 space-y-5">
 
+                <!-- Estado de disponibilidad -->
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Estado
+                        Estado de disponibilidad
                     </p>
 
                     <div class="mt-2">
@@ -83,28 +85,53 @@
                     </div>
                 </div>
 
+                <!-- Estado del usuario -->
+                <div class="border-t border-cream-200 pt-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                        Estado del usuario
+                    </p>
+
+                    <div class="mt-2">
+                        @if ($barbero->user?->estado == 1)
+                            <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
+                                Activo
+                            </span>
+                        @else
+                            <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
+                                Inactivo
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Correo -->
                 <div class="border-t border-cream-200 pt-5">
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                         Correo electrónico
                     </p>
-                    <p class="mt-1 text-sm font-medium text-ink">
+
+                    <p class="mt-1 text-sm font-medium text-ink break-all">
                         {{ $barbero->user?->email ?? 'No registrado' }}
                     </p>
                 </div>
 
+                <!-- Celular -->
                 <div class="border-t border-cream-200 pt-5">
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                         Celular
                     </p>
+
                     <p class="mt-1 text-sm font-medium text-ink">
                         {{ $barbero->user?->celular ?? 'No registrado' }}
                     </p>
                 </div>
 
+                <!-- Nombre usuario -->
                 <div class="border-t border-cream-200 pt-5">
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                         Nombre de usuario
                     </p>
+
                     <p class="mt-1 text-sm font-medium text-ink">
                         {{ $barbero->user?->nombre_usuario ?? 'No registrado' }}
                     </p>
@@ -116,6 +143,65 @@
 
         <!-- Información principal -->
         <div class="space-y-6">
+
+            <!-- Información del sistema -->
+            <div class="rounded-panel border border-cream-200 bg-white shadow-card">
+
+                <div class="border-b border-cream-200 px-6 py-5">
+                    <h3 class="font-display text-xl font-bold text-navy">
+                        Información del sistema
+                    </h3>
+
+                    <p class="mt-1 text-sm text-ink-500">
+                        Identificadores internos y datos administrativos.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 p-6">
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            ID barbero
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $barbero->id }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            ID usuario asociado
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $barbero->id_usuario ?? 'No registrado' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Fecha de registro
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $barbero->user?->fecha_registro ?? 'No registrada' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Último acceso
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $barbero->user?->ultimo_acceso ?? 'Sin acceso registrado' }}
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
 
             <!-- Información personal -->
             <div class="rounded-panel border border-cream-200 bg-white shadow-card">
@@ -136,6 +222,7 @@
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                             Nombres
                         </p>
+
                         <p class="mt-1 font-semibold text-ink">
                             {{ $barbero->user?->nombres ?? 'No registrado' }}
                         </p>
@@ -145,6 +232,7 @@
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                             Primer apellido
                         </p>
+
                         <p class="mt-1 font-semibold text-ink">
                             {{ $barbero->user?->primer_apellido ?? 'No registrado' }}
                         </p>
@@ -154,6 +242,7 @@
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                             Segundo apellido
                         </p>
+
                         <p class="mt-1 font-semibold text-ink">
                             {{ $barbero->user?->segundo_apellido ?? 'No registrado' }}
                         </p>
@@ -163,11 +252,23 @@
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                             Género
                         </p>
+
+                        @php
+                            $genero = $barbero->user?->genero;
+                        @endphp
+
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $barbero->user?->genero ?? 'No registrado' }}
+                            @if (!$genero)
+                                No registrado
+                            @elseif ($genero === 'M')
+                                Masculino
+                            @elseif ($genero === 'F')
+                                Femenino
+                            @else
+                                Otro
+                            @endif
                         </p>
                     </div>
-
                 </div>
 
             </div>
@@ -181,7 +282,7 @@
                     </h3>
 
                     <p class="mt-1 text-sm text-ink-500">
-                        Datos laborales y experiencia del barbero.
+                        Datos propios del perfil profesional del barbero.
                     </p>
                 </div>
 
@@ -189,8 +290,19 @@
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Estado disponibilidad
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $barbero->estado_disponibilidad ?? 'No registrado' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                             Especialidad
                         </p>
+
                         <p class="mt-1 font-semibold text-ink">
                             {{ $barbero->especialidad ?? 'No registrada' }}
                         </p>
@@ -200,6 +312,7 @@
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
                             Experiencia
                         </p>
+
                         <p class="mt-1 font-semibold text-ink">
                             {{ $barbero->experiencia_anos ?? 0 }} años
                         </p>
@@ -207,8 +320,9 @@
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Contratación
+                            Fecha contratación
                         </p>
+
                         <p class="mt-1 font-semibold text-ink">
                             {{ $barbero->fecha_contratacion ?? 'No registrada' }}
                         </p>
@@ -216,8 +330,9 @@
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Calificación
+                            Calificación promedio
                         </p>
+
                         <p class="mt-1 font-semibold text-ink">
                             {{ $barbero->calificacion_promedio ?? '0.00' }}
                         </p>

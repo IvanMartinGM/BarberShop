@@ -89,7 +89,7 @@ class BarberoController extends Controller
         });
 
         return redirect()
-            ->route('dashboard')
+            ->route('barbero.index')
             ->with("status", "Barbero registrado exitosamente");
     }
 
@@ -99,7 +99,7 @@ class BarberoController extends Controller
         return view('administrador.barberos.index', compact('barberos'));
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, int $id)
     {
         //Search for the barbero with the given id and load the related user
         $barbero = Barbero::with('user')->find($id);

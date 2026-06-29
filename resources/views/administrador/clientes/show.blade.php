@@ -16,7 +16,7 @@
             </h2>
 
             <p class="mt-2 text-sm text-ink-600">
-                Consulta la información personal y general del cliente.
+                Consulta toda la información administrativa del cliente.
             </p>
         </div>
 
@@ -54,7 +54,7 @@
                 </h3>
 
                 <p class="mt-1 text-sm text-cream-200">
-                    Cliente registrado
+                    {{ $cliente->tipo_cliente ?? 'Cliente sin categoría' }}
                 </p>
 
             </div>
@@ -78,6 +78,17 @@
                             </span>
                         @endif
                     </div>
+                </div>
+
+                <!-- Tipo de cliente -->
+                <div class="border-t border-cream-200 pt-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                        Tipo de cliente
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-ink">
+                        {{ $cliente->tipo_cliente ?? 'No registrado' }}
+                    </p>
                 </div>
 
                 <!-- Correo -->
@@ -119,6 +130,65 @@
 
         <!-- Información principal -->
         <div class="space-y-6">
+
+            <!-- Información del sistema -->
+            <div class="rounded-panel border border-cream-200 bg-white shadow-card">
+
+                <div class="border-b border-cream-200 px-6 py-5">
+                    <h3 class="font-display text-xl font-bold text-navy">
+                        Información del sistema
+                    </h3>
+
+                    <p class="mt-1 text-sm text-ink-500">
+                        Identificadores internos y datos administrativos.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 p-6">
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            ID cliente
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $cliente->id }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            ID usuario asociado
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $cliente->id_usuario ?? 'No registrado' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Fecha de registro
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $cliente->user?->fecha_registro ?? 'No registrada' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Último acceso
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $cliente->user?->ultimo_acceso ?? 'Sin acceso registrado' }}
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
 
             <!-- Información personal -->
             <div class="rounded-panel border border-cream-200 bg-white shadow-card">
@@ -170,11 +240,22 @@
                             Género
                         </p>
 
+                        @php
+                            $genero = $cliente->user?->genero;
+                        @endphp
+
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->genero ?? 'No registrado' }}
+                            @if (!$genero)
+                                No registrado
+                            @elseif ($genero === 'M')
+                                Masculino
+                            @elseif ($genero === 'F')
+                                Femenino
+                            @else
+                                Otro
+                            @endif
                         </p>
                     </div>
-
                 </div>
 
             </div>
@@ -213,24 +294,48 @@
                             {{ $cliente->ultima_visita ?? 'Sin visitas registradas' }}
                         </p>
                     </div>
-
+                    
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Fecha de registro
+                            Puntos fidelidad
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->fecha_registro ?? 'No registrada' }}
+                            {{ $cliente->puntos_fidelidad ?? 0 }} puntos
                         </p>
                     </div>
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Último acceso
+                            Acepta notificaciones
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->ultimo_acceso ?? 'Sin acceso registrado' }}
+                            @if ($cliente->acepta_notificaciones == 1)
+                                Sí
+                            @else
+                                No
+                            @endif
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Total visitas
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $cliente->total_visitas ?? 0 }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Total gastado
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            ${{ number_format((float) ($cliente->total_gastado ?? 0), 2) }}
                         </p>
                     </div>
 
@@ -238,12 +343,12 @@
 
             </div>
 
-            <!-- Observaciones -->
+            <!-- Notas generales -->
             <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
                 <div class="border-b border-cream-200 px-6 py-5">
                     <h3 class="font-display text-xl font-bold text-navy">
-                        Observaciones
+                        Notas generales
                     </h3>
 
                     <p class="mt-1 text-sm text-ink-500">
@@ -253,7 +358,7 @@
 
                 <div class="p-6">
                     <p class="leading-7 text-ink-700">
-                        {{ $cliente->observaciones ?? 'Este cliente aún no tiene observaciones registradas.' }}
+                        {{ $cliente->notas_generales ?? 'Este cliente aún no tiene notas generales registradas.' }}
                     </p>
                 </div>
 

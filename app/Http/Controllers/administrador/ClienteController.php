@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
 
 class ClienteController extends Controller
 {
@@ -95,7 +96,7 @@ class ClienteController extends Controller
             ],
             'genero' => 'required|in:M,F,otro',
             'celular' => 'required|string|max:20',
-            'fecha_nacimiento' => 'required|date'
+            'estado' => 'required|boolean',
         ]);
 
 
@@ -110,6 +111,7 @@ class ClienteController extends Controller
                 'nombre_usuario' => $validatedData['nombre_usuario'],
                 'genero' => $validatedData['genero'],
                 'celular' => $validatedData['celular'],
+                'estado' => $validatedData['estado'],
             ];
 
             if (!empty($validatedData['password'])) {
@@ -117,15 +119,42 @@ class ClienteController extends Controller
             }
 
             $user->update($userData);
-
-            // Update the cliente data
-            $cliente->update([
-                'fecha_nacimiento' => $validatedData['fecha_nacimiento'],
-            ]);
         });
 
         return redirect()
             ->route('cliente.show', $cliente->id)
             ->with("status", "Cliente actualizado exitosamente");
+    }
+
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $cliente = Cliente::with('user')->find($id);
+
+        if (!$cliente) {
+            return redirect()
+                ->route('cliente.index')
+                ->with('error', 'Cliente no encontrado.');
+        }
+
+        if (!$cliente->user) {
+            return redirect()
+                ->route('cliente.index')
+                ->with('error', 'El cliente no tiene un usuario asociado.');
+        }
+
+        if ($cliente->user->estado == 0) {
+            return redirect()
+                ->route('cliente.index')
+                ->with('error', 'El cliente ya está inactivo.');
+        }
+
+        $cliente->user->forceFill([
+            'estado' => 0,
+        ])->save();
+
+        return redirect()
+            ->route('cliente.index')
+            ->with('status', 'Cliente eliminado correctamente.');
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\administrador\BarberoController as AdministradorBarberoController;
 use App\Http\Controllers\administrador\ClienteController as AdministradorClienteController;
+use App\Http\Controllers\administrador\HorarioController as AdministradorHorarioController;
 
 
 
@@ -58,6 +59,12 @@ Route::middleware('auth')->group(function () {
 //Private Routes with authentication and role-based access control for Administrador
 Route::middleware(['auth', 'role:administrador'])->group(function () {
 
+
+ // The routes for the administrator profile management
+    Route::get('/profile', [AdministradorClienteController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile', [AdministradorClienteController::class, 'updateProfile'])->name('profile.update');
+
+
     Route::get('/dashboard', function () {
         return view('administrador.dashboard');
     })->name('dashboard');
@@ -90,14 +97,35 @@ Route::middleware(['auth', 'role:administrador'])->group(function () {
     // The route to show the form to edit a specific cliente
     Route::get('/clientes/{id}/edit', [AdministradorClienteController::class, 'edit'])->name('cliente.edit');
     // The route to update a specific cliente
-    Route::put('/clientes/{id}', [AdministradorClienteController::class, 'update'])->name('cliente.update');    
+    Route::put('/clientes/{id}', [AdministradorClienteController::class, 'update'])->name('cliente.update');
+    // The route to softdelete a specific cliente
+    Route::delete('/clientes/{id}', [AdministradorClienteController::class, 'destroy'])->name('cliente.destroy');
+
+    //Routes for managing horarios
+    // The route to show the form to create a new horario
+    Route::get('/horarios/create', [AdministradorHorarioController::class, 'create'])->name('horario.create');
+    // The route to store the new horario in the database
+    Route::post('/horarios', [AdministradorHorarioController::class, 'store'])->name('horario.store');
+    // The route to show the list of horarios
+    Route::get('/horarios', [AdministradorHorarioController::class, 'index'])->name('horario.index');
+    // The route to show the details of a specific horario
+    Route::get('/horarios/{id}', [AdministradorHorarioController::class, 'show'])->name('horario.show');
+    // The route to show the form to edit a specific horario
+    Route::get('/horarios/{id}/edit', [AdministradorHorarioController::class, 'edit'])->name('horario.edit');
+    // The route to update a specific horario
+    Route::put('/horarios/{id}', [AdministradorHorarioController::class, 'update'])->name('horario.update');
+    // The route to softdelete a specific horario
+    Route::delete('/horarios/{id}', [AdministradorHorarioController::class, 'destroy'])->name('horario.destroy');
+
 
 });
-
 
 //Private Routes with authentication and role-based access control for Barbero
 Route::middleware(['auth', 'role:barbero'])->group(function () {
     // Their proper dashboard route for barbero
+    Route::get('/barbero/dashboard', function () {
+        return view('barbero.dashboard');
+    })->name('barbero.dashboard');
 
 
 });

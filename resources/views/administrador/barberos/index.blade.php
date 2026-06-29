@@ -121,6 +121,7 @@
                                     <p class="font-bold text-ink">
                                         {{ $barbero->user->nombres }}
                                         {{ $barbero->user->primer_apellido }}
+                                        {{ $barbero->user->segundo_apellido }}
                                     </p>
 
                                     <p class="text-xs text-ink-500">
@@ -228,6 +229,7 @@
                             <h3 class="font-bold text-ink">
                                 {{ $barbero->user->nombres }}
                                 {{ $barbero->user->primer_apellido }}
+                                {{ $barbero->user->segundo_apellido }}
                             </h3>
 
                             <p class="text-sm text-ink-500">
