@@ -215,14 +215,37 @@
 
             <main class="flex-1 min-w-0 bg-cream px-4 py-6 sm:px-6 md:px-8 md:py-8">
 
-                @if (session('status'))
-                <div class="mb-6 rounded-panel border border-success bg-success-light px-4 py-3 text-sm font-medium text-success">
-                    {{ session('status') }}
+                {{-- Mensajes globales del panel administrador --}}
+                @php
+                $successMessage = session('status') ?? session('success');
+                @endphp
+
+                @if ($successMessage)
+                <div class="mb-6 rounded-card border border-success bg-success-light px-5 py-4 text-sm font-semibold text-success">
+                    {{ $successMessage }}
                 </div>
                 @endif
 
-                @yield('content')
+                @if (session('error'))
+                <div class="mb-6 rounded-card border border-danger bg-danger-light px-5 py-4 text-sm font-semibold text-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
 
+                @if ($errors->any())
+                <div class="mb-6 rounded-card border border-danger bg-danger-light px-5 py-4 text-sm text-danger">
+                    <p class="font-bold mb-2">
+                        Hay errores en el formulario:
+                    </p>
+
+                    <ul class="list-disc pl-5">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                @yield('content')
             </main>
 
         </div>

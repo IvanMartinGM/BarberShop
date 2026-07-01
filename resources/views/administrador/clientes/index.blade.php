@@ -26,18 +26,6 @@
 
     </div>
 
-    @if (session('status'))
-    <div class="rounded-card border border-success bg-success-light px-5 py-4 text-sm font-semibold text-success">
-        {{ session('status') }}
-    </div>
-    @endif
-
-    @if (session('error'))
-    <div class="rounded-card border border-danger bg-danger-light px-5 py-4 text-sm font-semibold text-danger">
-        {{ session('error') }}
-    </div>
-    @endif
-
     <!-- Stats rápidas -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
 
@@ -174,13 +162,19 @@
                                 <a href="{{ route('cliente.edit', $cliente->id) }}" title="Editar cliente" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-barber-red hover:bg-barber-red hover:text-white transition-colors">
                                     ✎
                                 </a>
+                                @if ($cliente->user?->estado == 1)
                                 <form action="{{ route('cliente.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desactivar este cliente? Esta acción no se puede deshacer.');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" title="Desactivar cliente" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-danger hover:bg-danger hover:text-white transition-colors">
                                         🗑
                                     </button>
-
+                                </form>
+                                @else
+                                <span class="inline-flex items-center justify-center rounded-card bg-cream-100 px-4 py-2 text-sm font-bold text-ink-500">
+                                    Inactivo
+                                </span>
+                                @endif
                             </div>
                         </td>
 
@@ -286,9 +280,22 @@
                         Ver
                     </a>
 
-                    <a href="#" class="inline-flex items-center justify-center rounded-card bg-barber-red px-4 py-2 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
+                    <a href="{{ route('cliente.edit', $cliente->id) }}" class="inline-flex items-center justify-center rounded-card bg-barber-red px-4 py-2 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
                         Editar
                     </a>
+                    @if ($cliente->user?->estado == 1)
+                    <form action="{{ route('cliente.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas desactivar este cliente? Esta acción no se puede deshacer.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" title="Desactivar cliente" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-danger hover:bg-danger hover:text-white transition-colors">
+                            🗑
+                        </button>
+                    </form>
+                    @else
+                    <span class="inline-flex items-center justify-center rounded-card bg-cream-100 px-4 py-2 text-sm font-bold text-ink-500">
+                        Inactivo
+                    </span>
+                    @endif
 
                 </div>
 

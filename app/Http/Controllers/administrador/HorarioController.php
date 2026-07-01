@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\DiaSemana;
 use App\Models\Horario;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
 
 class HorarioController extends Controller
 {
@@ -44,7 +45,7 @@ class HorarioController extends Controller
             $newHorario->diasSemana()->attach($validatedData['dias']);
         });
 
-        return redirect()->route('dashboard')->with('success', 'Horario creado exitosamente.');
+        return redirect()->route('administrador.dashboard')->with('success', 'Horario creado exitosamente.');
     }
 
     //This method will show the list of horarios in the system, with their details and the days of the week they are assigned to
@@ -124,6 +125,29 @@ class HorarioController extends Controller
     }
 
 
-    // The next method will softdelete a specific horario 
-    // changing its estado to 0 and detaching all its assigned days of the week
+    // The next method will softdelete a specific horario
+    public function destroy(int $id): RedirectResponse
+    {
+        $horario = Horario::find($id);
+
+        if (!$horario) {
+            return redirect()
+                ->route('horario.index')
+                ->with('error', 'Horario no encontrado.');
+        }
+
+        if ($horario->estado == 0) {
+            return redirect()
+                ->route('horario.index')
+                ->with('error', 'El horario ya está inactivo.');
+        }
+
+        $horario->forceFill([
+            'estado' => 0,
+        ])->save();
+
+        return redirect()
+            ->route('horario.index')
+            ->with('status', 'Horario desactivado correctamente.');
+    }
 }

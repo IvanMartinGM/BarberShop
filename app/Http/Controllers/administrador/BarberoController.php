@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Barbero;
 use App\Models\Role;
+use App\Models\Horario;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\RedirectResponse;
@@ -51,7 +52,7 @@ class BarberoController extends Controller
         }
 
         // Use a transaction to ensure that the user, barber profile and role are created successfully
-        DB::transaction(function () use ($validatedData, $barberRole) {
+        $newBarbero =  DB::transaction(function () use ($validatedData, $barberRole) {
 
             // Create a new user
             $newUser = User::create(
@@ -71,7 +72,7 @@ class BarberoController extends Controller
                 ]
             );
 
-            $newUser->barbero()->create([
+            $newBarbero = $newUser->barbero()->create([
                 'estado_disponibilidad' => $validatedData['estado_disponibilidad'],
                 'especialidad' => $validatedData['especialidad'],
                 'biografia' => $validatedData['biografia'] ?? null,
@@ -86,10 +87,13 @@ class BarberoController extends Controller
                 'estado' => 1,
                 'fecha_asignacion' => now()
             ]);
+
+            // Return the new user to the outer scope
+            return $newBarbero;
         });
 
         return redirect()
-            ->route('barbero.index')
+            ->route('barbero.show', ['id' => $newBarbero->id])
             ->with("status", "Barbero registrado exitosamente");
     }
 
@@ -99,10 +103,10 @@ class BarberoController extends Controller
         return view('administrador.barberos.index', compact('barberos'));
     }
 
-    public function show(Request $request, int $id)
+    public function show(int $id)
     {
         //Search for the barbero with the given id and load the related user
-        $barbero = Barbero::with('user')->find($id);
+        $barbero = Barbero::with('user')->findOrFail($id);
 
         if (!$barbero) {
             return redirect()->back()->with("error", "Barbero no encontrado");
@@ -184,25 +188,26 @@ class BarberoController extends Controller
         // Use a transaction to ensure that the user, barber profile and role are created successfully
         DB::transaction(function () use ($validatedData, $barbero, $user) {
             // Update a new user
-            $userData =[
-                    'nombres' => $validatedData['nombres'],
-                    'primer_apellido' => $validatedData['primer_apellido'],
-                    'segundo_apellido' => $validatedData['segundo_apellido'] ?? null ,
-                    'email' => $validatedData['email'],
-                    'nombre_usuario' => $validatedData['nombre_usuario'],
-                    'genero' => $validatedData['genero'],
-                    'celular' => $validatedData['celular'],
-                    //'foto_perfil' => 'images/default_profile.jpg',
-                ];
+            $userData = [
+                'nombres' => $validatedData['nombres'],
+                'primer_apellido' => $validatedData['primer_apellido'],
+                'segundo_apellido' => $validatedData['segundo_apellido'] ?? null,
+                'email' => $validatedData['email'],
+                'nombre_usuario' => $validatedData['nombre_usuario'],
+                'genero' => $validatedData['genero'],
+                'celular' => $validatedData['celular'],
+                //'foto_perfil' => 'images/default_profile.jpg',
+            ];
 
-                if(!empty($validatedData['password'])) {
-                    $userData['password'] = $validatedData['password'];
-                } 
+            if (!empty($validatedData['password'])) {
+                $userData['password'] = $validatedData['password'];
+            }
 
-                // Update the user
-                $user->update($userData);
+            // Update the user
+            $user->update($userData);
 
-                $barbero->update([
+            $barbero->update(
+                [
                     'estado_disponibilidad' => $validatedData['estado_disponibilidad'],
                     'especialidad' => $validatedData['especialidad'],
                     'biografia' => $validatedData['biografia'] ?? null,
@@ -215,5 +220,126 @@ class BarberoController extends Controller
         return redirect()
             ->route('barbero.show', $barbero->id)
             ->with("status", "Barbero actualizado exitosamente");
+    }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $barbero = Barbero::with(['user.roles'])->find($id);
+
+        if (!$barbero) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'Barbero no encontrado.');
+        }
+
+        if (!$barbero->user) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'El barbero no tiene un usuario asociado.');
+        }
+
+        if ($barbero->estado_disponibilidad === 'inactivo' && $barbero->user->estado == 0) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'El barbero ya está inactivo.');
+        }
+
+        $barberRole = Role::where('nombre', 'barbero')->first();
+
+        if (!$barberRole) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'No se encontró el rol de barbero en el sistema.');
+        }
+
+        DB::transaction(function () use ($barbero, $barberRole) {
+            $user = $barbero->user;
+
+            // Desactivar el perfil laboral del barbero
+            $barbero->forceFill([
+                'estado_disponibilidad' => 'inactivo',
+            ])->save();
+
+            // Desactivar el rol de barbero en la tabla pivote
+            $user->roles()->updateExistingPivot($barberRole->id, [
+                'estado' => 0,
+            ]);
+
+            // Verificar si el usuario tiene otros roles activos, por ejemplo administrador
+            $hasOtherActiveRoles = $user->roles()
+                ->where('roles.id', '!=', $barberRole->id)
+                ->wherePivot('estado', 1)
+                ->exists();
+
+            // Si no tiene otros roles activos, se desactiva el usuario completo
+            if (!$hasOtherActiveRoles) {
+                $user->forceFill([
+                    'estado' => 0,
+                ])->save();
+            }
+        });
+
+        return redirect()
+            ->route('barbero.index')
+            ->with('status', 'Barbero desactivado correctamente.');
+    }
+
+    public function editHorarios(int $id)
+    {
+        $barbero = Barbero::with(['user', 'horarios.diasSemana'])->find($id);
+
+        if (!$barbero) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'Barbero no encontrado.');
+        }
+
+        if (!$barbero->user) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'El barbero no tiene un usuario asociado.');
+        }
+
+        $horarios = Horario::with('diasSemana')
+            ->where('estado', 1)
+            ->get();
+
+        return view('administrador.barberos.horarios', compact('barbero', 'horarios'));
+    }
+
+
+    public function updateHorarios(Request $request, int $id): RedirectResponse
+    {
+        $barbero = Barbero::with('horarios')->find($id);
+
+        if (!$barbero) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'Barbero no encontrado.');
+        }
+
+        $validatedData = $request->validate([
+            'horarios' => 'nullable|array',
+            'horarios.*' => 'exists:horarios,id',
+        ]);
+
+        $horariosSeleccionados = $validatedData['horarios'] ?? [];
+
+        DB::transaction(function () use ($barbero, $horariosSeleccionados) {
+            $syncData = [];
+
+            foreach ($horariosSeleccionados as $idHorario) {
+                $syncData[$idHorario] = [
+                    'fecha_asignacion' => now(),
+                    'estado' => 1,
+                ];
+            }
+
+            $barbero->horarios()->sync($syncData);
+        });
+
+        return redirect()
+            ->route('barbero.show', $barbero->id)
+            ->with('status', 'Horarios asignados correctamente.');
     }
 }

@@ -22,14 +22,16 @@
 
         <div class="flex flex-col sm:flex-row gap-3">
 
-            <a href="{{ route('barbero.index') }}"
-               class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
+            <a href="{{ route('barbero.index') }}" class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
                 Volver
             </a>
 
-            <a href="{{ route('barbero.edit', $barbero->id) }}"
-               class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
+            <a href="{{ route('barbero.edit', $barbero->id) }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
                 Editar barbero
+            </a>
+
+            <a href="{{ route('barbero.horarios.edit', $barbero->id) }}" class="inline-flex items-center justify-center rounded-panel bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-800 transition-colors">
+                Gestionar horarios
             </a>
 
         </div>
@@ -70,17 +72,17 @@
 
                     <div class="mt-2">
                         @if ($barbero->estado_disponibilidad === 'disponible')
-                            <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
-                                Disponible
-                            </span>
+                        <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
+                            Disponible
+                        </span>
                         @elseif ($barbero->estado_disponibilidad === 'ocupado')
-                            <span class="inline-flex rounded-full bg-warning-light px-3 py-1 text-xs font-bold text-warning">
-                                Ocupado
-                            </span>
+                        <span class="inline-flex rounded-full bg-warning-light px-3 py-1 text-xs font-bold text-warning">
+                            Ocupado
+                        </span>
                         @else
-                            <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
-                                Inactivo
-                            </span>
+                        <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
+                            Inactivo
+                        </span>
                         @endif
                     </div>
                 </div>
@@ -93,13 +95,13 @@
 
                     <div class="mt-2">
                         @if ($barbero->user?->estado == 1)
-                            <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
-                                Activo
-                            </span>
+                        <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
+                            Activo
+                        </span>
                         @else
-                            <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
-                                Inactivo
-                            </span>
+                        <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
+                            Inactivo
+                        </span>
                         @endif
                     </div>
                 </div>
@@ -254,18 +256,18 @@
                         </p>
 
                         @php
-                            $genero = $barbero->user?->genero;
+                        $genero = $barbero->user?->genero;
                         @endphp
 
                         <p class="mt-1 font-semibold text-ink">
                             @if (!$genero)
-                                No registrado
+                            No registrado
                             @elseif ($genero === 'M')
-                                Masculino
+                            Masculino
                             @elseif ($genero === 'F')
-                                Femenino
+                            Femenino
                             @else
-                                Otro
+                            Otro
                             @endif
                         </p>
                     </div>
@@ -341,7 +343,126 @@
                 </div>
 
             </div>
+            <!-- Horarios asignados -->
+            <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
+                <div class="border-b border-cream-200 px-6 py-5">
+                    <h3 class="font-display text-xl font-bold text-navy">
+                        Horarios asignados
+                    </h3>
+
+                    <p class="mt-1 text-sm text-ink-500">
+                        Consulta los horarios de trabajo asignados a este barbero.
+                    </p>
+                </div>
+
+                <div class="p-6">
+
+                    @if ($barbero->horarios->count() > 0)
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+                        @foreach ($barbero->horarios as $horario)
+
+                        <article class="rounded-card border border-cream-200 bg-cream-50 p-5">
+
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+
+                                <div>
+                                    <h4 class="font-display text-xl font-bold text-navy">
+                                        {{ $horario->nombre_horario }}
+                                    </h4>
+
+                                    <p class="mt-1 text-sm text-ink-600">
+                                        {{ $horario->descripcion ?? 'Sin descripción registrada.' }}
+                                    </p>
+                                </div>
+
+                                @if ($horario->estado == 1)
+                                <span class="inline-flex w-fit rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
+                                    Activo
+                                </span>
+                                @else
+                                <span class="inline-flex w-fit rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
+                                    Inactivo
+                                </span>
+                                @endif
+
+                            </div>
+
+                            <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                                <div class="rounded-card bg-white px-4 py-3 shadow-card">
+                                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                        Hora de inicio
+                                    </p>
+
+                                    <p class="mt-1 font-semibold text-ink">
+                                        {{ substr($horario->hora_inicio, 0, 5) }}
+                                    </p>
+                                </div>
+
+                                <div class="rounded-card bg-white px-4 py-3 shadow-card">
+                                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                        Hora de fin
+                                    </p>
+
+                                    <p class="mt-1 font-semibold text-ink">
+                                        {{ substr($horario->hora_fin, 0, 5) }}
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="mt-5">
+                                <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                    Días asignados
+                                </p>
+
+                                <div class="mt-2 flex flex-wrap gap-2">
+
+                                    @forelse ($horario->diasSemana as $dia)
+                                    <span class="inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold text-ink-700 shadow-card">
+                                        {{ ucfirst($dia->nombre_dia) }}
+                                    </span>
+                                    @empty
+                                    <span class="text-sm text-ink-500">
+                                        Sin días asignados
+                                    </span>
+                                    @endforelse
+
+                                </div>
+                            </div>
+
+                        </article>
+
+                        @endforeach
+
+                    </div>
+
+                    @else
+
+                    <div class="rounded-card border border-warning bg-warning-light px-5 py-6 text-center">
+
+                        <h4 class="font-display text-xl font-bold text-warning">
+                            Sin horarios asignados
+                        </h4>
+
+                        <p class="mt-2 text-sm font-medium text-ink-700">
+                            Este barbero todavía no tiene horarios de trabajo asignados.
+                        </p>
+
+                        <a href="{{ route('barbero.horarios.edit', $barbero->id) }}" class="mt-5 inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
+                            Asignar horario
+                        </a>
+
+                    </div>
+
+                    @endif
+
+                </div>
+
+            </div>
             <!-- Biografía -->
             <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\administrador\BarberoController as AdministradorBarberoController;
 use App\Http\Controllers\administrador\ClienteController as AdministradorClienteController;
 use App\Http\Controllers\administrador\HorarioController as AdministradorHorarioController;
+use App\Http\Controllers\administrador\ServicioController as AdministradorServicioController;
 
 
 
@@ -41,8 +42,10 @@ Route::get('/contacto', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/register', [ClienteController::class, 'create'])->name('cliente_register');
-    Route::post('/register', [ClienteController::class, 'store'])->name('cliente_store');
+    // The route shows the registration form for new clientes
+    Route::get('/register', [ClienteController::class, 'create'])->name('register.create');
+    // The route to store the new cliente in the database
+    Route::post('/register', [ClienteController::class, 'store'])->name('cliente.store');
 });
 
 
@@ -60,14 +63,14 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:administrador'])->group(function () {
 
 
- // The routes for the administrator profile management
+    // The routes for the administrator profile management
     Route::get('/profile', [AdministradorClienteController::class, 'editProfile'])->name('profile.edit');
     Route::put('/profile', [AdministradorClienteController::class, 'updateProfile'])->name('profile.update');
 
 
     Route::get('/dashboard', function () {
         return view('administrador.dashboard');
-    })->name('dashboard');
+    })->name('administrador.dashboard');
 
 
     // Routes for managing barberos
@@ -83,13 +86,20 @@ Route::middleware(['auth', 'role:administrador'])->group(function () {
     Route::get('/barberos/{id}/edit', [AdministradorBarberoController::class, 'edit'])->name('barbero.edit');
     // The route to update a specific barbero
     Route::put('/barberos/{id}', [AdministradorBarberoController::class, 'update'])->name('barbero.update');
+    // The route to softdelete a specific barbero
+    Route::delete('/barberos/{id}', [AdministradorBarberoController::class, 'destroy'])->name('barbero.destroy');
+
+    // The route to show the form to edit the horarios of a specific barbero
+    Route::get('/barberos/{id}/horarios', [AdministradorBarberoController::class, 'editHorarios'])->name('barbero.horarios.edit');
+    // The route to update the horarios of a specific barbero
+    Route::patch('/barberos/{id}/horarios', [AdministradorBarberoController::class, 'updateHorarios'])->name('barbero.horarios.update');
 
 
     //Routes for managing clientes
     // The route to show the form to create a new cliente
     Route::get('/clientes/create', [AdministradorClienteController::class, 'create'])->name('cliente.create');
     // The route to store the new cliente in the database
-    Route::post('/clientes', [ClienteController::class, 'store'])->name('cliente.store');
+    Route::post('/clientes', [AdministradorClienteController::class, 'store'])->name('cliente.store');
     // The route to show the list of clientes
     Route::get('/clientes', [AdministradorClienteController::class, 'index'])->name('cliente.index');
     // The route to show the details of a specific cliente
@@ -117,7 +127,18 @@ Route::middleware(['auth', 'role:administrador'])->group(function () {
     // The route to softdelete a specific horario
     Route::delete('/horarios/{id}', [AdministradorHorarioController::class, 'destroy'])->name('horario.destroy');
 
+    //Routes for managing servicios
+    // The route to show the form to create a new servicio
+    Route::get('/admin/servicios/create', [AdministradorServicioController::class, 'create'])->name('servicio.create');
+    Route::post('/admin/servicios', [AdministradorServicioController::class, 'store'])->name('servicio.store');
+    Route::get('/admin/servicios', [AdministradorServicioController::class, 'index'])->name('servicio.index');
+    Route::get('/admin/servicios/{id}', [AdministradorServicioController::class, 'show'])->name('servicio.show');
+    Route::get('/admin/servicios/{id}/edit', [AdministradorServicioController::class, 'edit'])->name('servicio.edit');
+    Route::put('/admin/servicios/{id}', [AdministradorServicioController::class, 'update'])->name('servicio.update');
+    Route::delete('/admin/servicios/{id}', [AdministradorServicioController::class, 'destroy'])->name('servicio.destroy');
 
+
+    
 });
 
 //Private Routes with authentication and role-based access control for Barbero
@@ -126,8 +147,6 @@ Route::middleware(['auth', 'role:barbero'])->group(function () {
     Route::get('/barbero/dashboard', function () {
         return view('barbero.dashboard');
     })->name('barbero.dashboard');
-
-
 });
 
 

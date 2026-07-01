@@ -20,8 +20,7 @@
             </p>
         </div>
 
-        <a href="{{ route('horario.create') }}"
-           class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+        <a href="{{ route('horario.create') }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
             Agregar horario
         </a>
 
@@ -29,21 +28,15 @@
 
     <!-- Mensajes -->
     @if (session('status'))
-        <div class="rounded-card border border-success bg-success-light px-5 py-4 text-sm font-semibold text-success">
-            {{ session('status') }}
-        </div>
-    @endif
-
-    @if (session('success'))
-        <div class="rounded-card border border-success bg-success-light px-5 py-4 text-sm font-semibold text-success">
-            {{ session('success') }}
-        </div>
+    <div class="rounded-card border border-success bg-success-light px-5 py-4 text-sm font-semibold text-success">
+        {{ session('status') }}
+    </div>
     @endif
 
     @if (session('error'))
-        <div class="rounded-card border border-danger bg-danger-light px-5 py-4 text-sm font-semibold text-danger">
-            {{ session('error') }}
-        </div>
+    <div class="rounded-card border border-danger bg-danger-light px-5 py-4 text-sm font-semibold text-danger">
+        {{ session('error') }}
+    </div>
     @endif
 
     <!-- Stats rápidas -->
@@ -98,11 +91,7 @@
             </div>
 
             <div class="w-full sm:w-80">
-                <input
-                    type="text"
-                    placeholder="Buscar horario..."
-                    class="w-full rounded-card border border-cream-300 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                >
+                <input type="text" placeholder="Buscar horario..." class="w-full rounded-card border border-cream-300 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
             </div>
 
         </div>
@@ -125,113 +114,123 @@
 
                     @forelse ($horarios as $horario)
 
-                        <tr class="hover:bg-cream-50 transition-colors">
+                    <tr class="hover:bg-cream-50 transition-colors">
 
-                            <!-- Horario -->
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-3">
+                        <!-- Horario -->
+                        <td class="px-6 py-5">
+                            <div class="flex items-center gap-3">
 
-                                    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
-                                        🕒
-                                    </div>
-
-                                    <div>
-                                        <p class="font-bold text-ink">
-                                            {{ $horario->nombre_horario }}
-                                        </p>
-
-                                        <p class="text-xs text-ink-500">
-                                            {{ $horario->descripcion ?? 'Sin descripción' }}
-                                        </p>
-                                    </div>
-
+                                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
+                                    🕒
                                 </div>
-                            </td>
 
-                            <!-- Horas -->
-                            <td class="px-6 py-5 text-ink-700">
-                                <span class="font-semibold">
-                                    {{ substr($horario->hora_inicio, 0, 5) }}
-                                </span>
+                                <div>
+                                    <p class="font-bold text-ink">
+                                        {{ $horario->nombre_horario }}
+                                    </p>
 
-                                <span class="text-ink-500">a</span>
-
-                                <span class="font-semibold">
-                                    {{ substr($horario->hora_fin, 0, 5) }}
-                                </span>
-                            </td>
-
-                            <!-- Días -->
-                            <td class="px-6 py-5">
-                                <div class="flex flex-wrap gap-2">
-                                    @forelse ($horario->diasSemana as $dia)
-                                        <span class="inline-flex rounded-full bg-cream-100 px-3 py-1 text-xs font-bold text-ink-700">
-                                            {{ ucfirst($dia->nombre_dia) }}
-                                        </span>
-                                    @empty
-                                        <span class="text-sm text-ink-500">
-                                            Sin días asignados
-                                        </span>
-                                    @endforelse
+                                    <p class="text-xs text-ink-500">
+                                        {{ $horario->descripcion ?? 'Sin descripción' }}
+                                    </p>
                                 </div>
-                            </td>
 
-                            <!-- Estado -->
-                            <td class="px-6 py-5">
+                            </div>
+                        </td>
+
+                        <!-- Horas -->
+                        <td class="px-6 py-5 text-ink-700">
+                            <span class="font-semibold">
+                                {{ substr($horario->hora_inicio, 0, 5) }}
+                            </span>
+
+                            <span class="text-ink-500">a</span>
+
+                            <span class="font-semibold">
+                                {{ substr($horario->hora_fin, 0, 5) }}
+                            </span>
+                        </td>
+
+                        <!-- Días -->
+                        <td class="px-6 py-5">
+                            <div class="flex flex-wrap gap-2">
+                                @forelse ($horario->diasSemana as $dia)
+                                <span class="inline-flex rounded-full bg-cream-100 px-3 py-1 text-xs font-bold text-ink-700">
+                                    {{ ucfirst($dia->nombre_dia) }}
+                                </span>
+                                @empty
+                                <span class="text-sm text-ink-500">
+                                    Sin días asignados
+                                </span>
+                                @endforelse
+                            </div>
+                        </td>
+
+                        <!-- Estado -->
+                        <td class="px-6 py-5">
+                            @if ($horario->estado == 1)
+                            <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
+                                Activo
+                            </span>
+                            @else
+                            <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
+                                Inactivo
+                            </span>
+                            @endif
+                        </td>
+
+                        <!-- Acciones -->
+                        <td class="px-6 py-5">
+                            <div class="flex items-center justify-end gap-2">
+
+                                <a href="{{ route('horario.show', $horario->id) }}" title="Ver horario" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-navy hover:bg-navy hover:text-white transition-colors">
+                                    👁
+                                </a>
+
+                                <a href="{{ route('horario.edit', $horario->id) }}" title="Editar horario" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-barber-red hover:bg-barber-red hover:text-white transition-colors">
+                                    ✎
+                                </a>
+
                                 @if ($horario->estado == 1)
-                                    <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
-                                        Activo
-                                    </span>
+                                <form method="POST" action="{{ route('horario.destroy', $horario->id) }}" onsubmit="return confirm('¿Seguro que deseas desactivar este horario? Ya no será elegible para asignarlo a barberos.');">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" title="Desactivar horario" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-danger bg-white text-danger hover:bg-danger hover:text-white transition-colors">
+                                        🗑
+                                    </button>
+                                </form>
                                 @else
-                                    <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
-                                        Inactivo
-                                    </span>
+                                <span title="Horario inactivo" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-cream-100 text-ink-500">
+                                    —
+                                </span>
                                 @endif
-                            </td>
 
-                            <!-- Acciones -->
-                            <td class="px-6 py-5">
-                                <div class="flex items-center justify-end gap-2">
+                            </div>
+                        </td>
 
-                                    <a href="{{ route('horario.show', $horario->id) }}"
-                                       title="Ver horario"
-                                       class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-navy hover:bg-navy hover:text-white transition-colors">
-                                        👁
-                                    </a>
-
-                                    <a href="{{ route('horario.edit', $horario->id) }}"
-                                       title="Editar horario"
-                                       class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-barber-red hover:bg-barber-red hover:text-white transition-colors">
-                                        ✎
-                                    </a>
-
-                                </div>
-                            </td>
-
-                        </tr>
+                    </tr>
 
                     @empty
 
-                        <tr>
-                            <td colspan="5" class="px-6 py-14 text-center">
+                    <tr>
+                        <td colspan="5" class="px-6 py-14 text-center">
 
-                                <div class="mx-auto max-w-md">
-                                    <h3 class="font-display text-2xl font-bold text-navy">
-                                        No hay horarios registrados
-                                    </h3>
+                            <div class="mx-auto max-w-md">
+                                <h3 class="font-display text-2xl font-bold text-navy">
+                                    No hay horarios registrados
+                                </h3>
 
-                                    <p class="mt-2 text-sm text-ink-600">
-                                        Cuando registres horarios, aparecerán listados en esta sección.
-                                    </p>
+                                <p class="mt-2 text-sm text-ink-600">
+                                    Cuando registres horarios, aparecerán listados en esta sección.
+                                </p>
 
-                                    <a href="{{ route('horario.create') }}"
-                                       class="mt-6 inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
-                                        Agregar primer horario
-                                    </a>
-                                </div>
+                                <a href="{{ route('horario.create') }}" class="mt-6 inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
+                                    Agregar primer horario
+                                </a>
+                            </div>
 
-                            </td>
-                        </tr>
+                        </td>
+                    </tr>
 
                     @endforelse
 
@@ -245,101 +244,113 @@
 
             @forelse ($horarios as $horario)
 
-                <article class="p-5">
+            <article class="p-5">
 
-                    <div class="flex items-start justify-between gap-4">
+                <div class="flex items-start justify-between gap-4">
 
-                        <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3">
 
-                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
-                                🕒
-                            </div>
-
-                            <div>
-                                <h3 class="font-bold text-ink">
-                                    {{ $horario->nombre_horario }}
-                                </h3>
-
-                                <p class="text-sm text-ink-500">
-                                    {{ substr($horario->hora_inicio, 0, 5) }}
-                                    -
-                                    {{ substr($horario->hora_fin, 0, 5) }}
-                                </p>
-                            </div>
-
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
+                            🕒
                         </div>
 
-                        @if ($horario->estado == 1)
-                            <span class="rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
-                                Activo
-                            </span>
-                        @else
-                            <span class="rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
-                                Inactivo
-                            </span>
-                        @endif
+                        <div>
+                            <h3 class="font-bold text-ink">
+                                {{ $horario->nombre_horario }}
+                            </h3>
 
-                    </div>
-
-                    <div class="mt-4 grid grid-cols-1 gap-3 text-sm">
-
-                        <div class="rounded-card bg-cream-50 px-4 py-3">
-                            <p class="text-xs font-semibold text-ink-500">Descripción</p>
-                            <p class="mt-1 font-medium text-ink">
-                                {{ $horario->descripcion ?? 'Sin descripción' }}
+                            <p class="text-sm text-ink-500">
+                                {{ substr($horario->hora_inicio, 0, 5) }}
+                                -
+                                {{ substr($horario->hora_fin, 0, 5) }}
                             </p>
                         </div>
 
-                        <div class="rounded-card bg-cream-50 px-4 py-3">
-                            <p class="text-xs font-semibold text-ink-500">Días asignados</p>
+                    </div>
 
-                            <div class="mt-2 flex flex-wrap gap-2">
-                                @forelse ($horario->diasSemana as $dia)
-                                    <span class="inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold text-ink-700 shadow-card">
-                                        {{ ucfirst($dia->nombre_dia) }}
-                                    </span>
-                                @empty
-                                    <span class="text-sm text-ink-500">
-                                        Sin días asignados
-                                    </span>
-                                @endforelse
-                            </div>
+                    @if ($horario->estado == 1)
+                    <span class="rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
+                        Activo
+                    </span>
+                    @else
+                    <span class="rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
+                        Inactivo
+                    </span>
+                    @endif
+
+                </div>
+
+                <div class="mt-4 grid grid-cols-1 gap-3 text-sm">
+
+                    <div class="rounded-card bg-cream-50 px-4 py-3">
+                        <p class="text-xs font-semibold text-ink-500">Descripción</p>
+                        <p class="mt-1 font-medium text-ink">
+                            {{ $horario->descripcion ?? 'Sin descripción' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-3">
+                        <p class="text-xs font-semibold text-ink-500">Días asignados</p>
+
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            @forelse ($horario->diasSemana as $dia)
+                            <span class="inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold text-ink-700 shadow-card">
+                                {{ ucfirst($dia->nombre_dia) }}
+                            </span>
+                            @empty
+                            <span class="text-sm text-ink-500">
+                                Sin días asignados
+                            </span>
+                            @endforelse
                         </div>
-
                     </div>
 
-                    <div class="mt-4 flex justify-end gap-2">
+                </div>
 
-                        <a href="#horario.show', $horario->id) }}"
-                           class="inline-flex items-center justify-center rounded-card border border-cream-300 bg-white px-4 py-2 text-sm font-bold text-navy hover:bg-navy hover:text-white transition-colors">
-                            Ver
-                        </a>
+                <div class="mt-4 flex flex-wrap justify-end gap-2">
 
-                        <a href="#horario.edit', $horario->id) }}"
-                           class="inline-flex items-center justify-center rounded-card bg-barber-red px-4 py-2 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
-                            Editar
-                        </a>
+                    <a href="{{ route('horario.show', $horario->id) }}" class="inline-flex items-center justify-center rounded-card border border-cream-300 bg-white px-4 py-2 text-sm font-bold text-navy hover:bg-navy hover:text-white transition-colors">
+                        Ver
+                    </a>
 
-                    </div>
+                    <a href="{{ route('horario.edit', $horario->id) }}" class="inline-flex items-center justify-center rounded-card bg-barber-red px-4 py-2 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
+                        Editar
+                    </a>
 
-                </article>
+                    @if ($horario->estado == 1)
+                    <form method="POST" action="{{ route('horario.destroy', $horario->id) }}" onsubmit="return confirm('¿Seguro que deseas desactivar este horario? Ya no será elegible para asignarlo a barberos.');">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="submit" class="inline-flex items-center justify-center rounded-card border border-danger bg-white px-4 py-2 text-sm font-bold text-danger hover:bg-danger hover:text-white transition-colors">
+                            Desactivar
+                        </button>
+                    </form>
+                    @else
+                    <span class="inline-flex items-center justify-center rounded-card bg-cream-100 px-4 py-2 text-sm font-bold text-ink-500">
+                        Inactivo
+                    </span>
+                    @endif
+
+                </div>
+
+            </article>
 
             @empty
 
-                <div class="px-6 py-14 text-center">
-                    <h3 class="font-display text-2xl font-bold text-navy">
-                        No hay horarios registrados
-                    </h3>
+            <div class="px-6 py-14 text-center">
+                <h3 class="font-display text-2xl font-bold text-navy">
+                    No hay horarios registrados
+                </h3>
 
-                    <p class="mt-2 text-sm text-ink-600">
-                        Cuando registres horarios, aparecerán listados en esta sección.
-                    </p>
+                <p class="mt-2 text-sm text-ink-600">
+                    Cuando registres horarios, aparecerán listados en esta sección.
+                </p>
 
-                    <a href="{{ route('horario.create') }}"
-                       class="mt-6 inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
-                        Agregar primer horario
-                    </a>
-                </div>
+                <a href="{{ route('horario.create') }}" class="mt-6 inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
+                    Agregar primer horario
+                </a>
+            </div>
 
             @endforelse
 

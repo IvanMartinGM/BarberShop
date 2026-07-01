@@ -34,8 +34,17 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            // Redirect the user to the intended page after successful login depends on the role of the user
+            $user = Auth::user();
 
-            return redirect()->intended('contacto');
+            if ($user->hasRole('administrador')) {
+                return redirect()->route('administrador.dashboard');
+            } elseif ($user->hasRole('barbero')) {
+                return redirect()->route('barbero.dashboard');
+            } elseif ($user->hasRole('cliente')) {
+                return redirect()->route('cliente.dashboard');
+            }
+
         }
 
         return back()->withErrors([

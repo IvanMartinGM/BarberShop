@@ -89,6 +89,18 @@
                     </div>
 
                     <div>
+                        <label for="fecha_nacimiento" class="block text-sm font-semibold text-navy mb-2">
+                            Fecha de nacimiento *
+                        </label>
+
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ old('fecha_nacimiento') }}" required class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+
+                        @error('fecha_nacimiento')
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
                         <label for="nombre_usuario" class="block text-sm font-semibold text-navy mb-2">
                             Nombre de Usuario *
                         </label>

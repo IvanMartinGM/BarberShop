@@ -31,19 +31,6 @@
 
     </div>
 
-    <!-- Mensajes -->
-    @if (session('status'))
-        <div class="rounded-card border border-success bg-success-light px-5 py-4 text-sm font-semibold text-success">
-            {{ session('status') }}
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="rounded-card border border-danger bg-danger-light px-5 py-4 text-sm font-semibold text-danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <!-- Contenido principal -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 

@@ -23,7 +23,6 @@
         <a href="{{ route('barbero.create') }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
             Agregar barbero
         </a>
-
     </div>
     <!-- Stats rápidas -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -168,13 +167,28 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center justify-end gap-2">
 
-                                <a href="{{route('barbero.show', $barbero->id)}}" title="Ver barbero" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-navy hover:bg-navy hover:text-white transition-colors">
+                                <a href="{{ route('barbero.show', $barbero->id) }}" title="Ver barbero" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-navy hover:bg-navy hover:text-white transition-colors">
                                     👁
                                 </a>
 
-                                <a href="{{route('barbero.edit', $barbero->id)}}" title="Editar barbero" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-barber-red hover:bg-barber-red hover:text-white transition-colors">
+                                <a href="{{ route('barbero.edit', $barbero->id) }}" title="Editar barbero" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-white text-barber-red hover:bg-barber-red hover:text-white transition-colors">
                                     ✎
                                 </a>
+
+                                @if ($barbero->user?->estado == 1)
+                                <form method="POST" action="{{ route('barbero.destroy', $barbero->id) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este barbero? El usuario quedará inactivo.');">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" title="Eliminar barbero" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-danger bg-white text-danger hover:bg-danger hover:text-white transition-colors">
+                                        🗑
+                                    </button>
+                                </form>
+                                @else
+                                <span title="Barbero inactivo" class="inline-flex h-10 w-10 items-center justify-center rounded-card border border-cream-300 bg-cream-100 text-ink-500">
+                                    Inactivo
+                                </span>
+                                @endif
 
                             </div>
                         </td>
@@ -280,15 +294,30 @@
 
                 </div>
 
-                <div class="mt-4 flex justify-end gap-2">
+                <div class="mt-4 flex flex-wrap justify-end gap-2">
 
                     <a href="{{ route('barbero.show', $barbero->id) }}" class="inline-flex items-center justify-center rounded-card border border-cream-300 bg-white px-4 py-2 text-sm font-bold text-navy hover:bg-navy hover:text-white transition-colors">
                         Ver
                     </a>
 
-                    <a href="#" class="inline-flex items-center justify-center rounded-card bg-barber-red px-4 py-2 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
+                    <a href="{{ route('barbero.edit', $barbero->id) }}" class="inline-flex items-center justify-center rounded-card bg-barber-red px-4 py-2 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
                         Editar
                     </a>
+
+                    @if ($barbero->user?->estado == 1)
+                    <form method="POST" action="{{ route('barbero.destroy', $barbero->id) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este barbero? El usuario quedará inactivo.');">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="submit" class="inline-flex items-center justify-center rounded-card border border-danger bg-white px-4 py-2 text-sm font-bold text-danger hover:bg-danger hover:text-white transition-colors">
+                            🗑
+                        </button>
+                    </form>
+                    @else
+                    <span class="inline-flex items-center justify-center rounded-card bg-cream-100 px-4 py-2 text-sm font-bold text-ink-500">
+                        Inactivo
+                    </span>
+                    @endif
 
                 </div>
 

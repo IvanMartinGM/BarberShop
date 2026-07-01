@@ -19,7 +19,15 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             DiaSemanaSeeder::class,
             MetodoPagoSeeder::class,
+
             AdminUserSeeder::class,
+
+            HorarioSeeder::class,
+            HorarioDiaSemanaSeeder::class,
+            
+            ClienteSeeder::class,
+            BarberoSeeder::class,
+            BarberoHorarioSeeder::class,
         ]);
     }
 }

@@ -57,7 +57,7 @@
                 <!-- Desktop Auth Links -->
                 <div class="hidden md:flex items-center gap-3">
                     @auth
-                        <a href="{{ route('dashboard') }}"
+                        <a href="{{ route('administrador.dashboard') }}"
                            class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                             Dashboard
                         </a>
@@ -76,7 +76,7 @@
                             Iniciar Sesión
                         </a>
 
-                        <a href="{{ route('cliente_register') }}"
+                        <a href="{{ route('register.create') }}"
                            class="inline-flex items-center justify-center rounded-md bg-barber-red px-4 py-2 text-sm font-semibold text-white shadow-card hover:bg-barber-red-600 transition-colors">
                             Registrarse
                         </a>
@@ -86,7 +86,7 @@
                 <!-- Mobile Auth Links -->
                 <div class="flex md:hidden items-center gap-2 shrink-0">
                     @auth
-                        <a href="{{ route('dashboard') }}"
+                        <a href="{{ route('administrador.dashboard') }}"
                            class="rounded-md bg-cream-100 px-3 py-2 text-xs font-semibold text-navy hover:bg-cream-200 transition-colors">
                             Panel
                         </a>
@@ -105,7 +105,7 @@
                             Entrar
                         </a>
 
-                        <a href="{{ route('cliente_register') }}"
+                        <a href="{{ route('register.create') }}"
                            class="rounded-md bg-barber-red px-3 py-2 text-xs font-semibold text-white hover:bg-barber-red-600 transition-colors">
                             Registro
                         </a>
