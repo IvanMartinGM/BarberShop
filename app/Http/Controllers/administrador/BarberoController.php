@@ -11,10 +11,14 @@ use App\Models\Horario;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 
 class BarberoController extends Controller
 {
+    private const DEFAULT_PROFILE_PHOTO = 'images/default-avatar.svg';
+
+
     public function create()
     {
         return view('administrador.barberos.create');
@@ -33,14 +37,15 @@ class BarberoController extends Controller
             'nombre_usuario' => 'required|string|max:60|unique:usuarios,nombre_usuario',
             'genero' => 'required|in:M,F,otro',
             'celular' => 'required|string|max:20',
+            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
 
             'estado_disponibilidad' => 'required|in:disponible,ocupado,inactivo',
             'especialidad' => 'required|string|max:150',
             'biografia' => 'nullable|string',
             'fecha_contratacion' => 'required|date',
             'experiencia_anos' => 'required|integer|min:0',
-        ]);
 
+        ]);
 
         //search for the role with the name 'barbero' to assign it to the new user
         $barberRole = Role::where('nombre', 'barbero')->first();
@@ -51,15 +56,22 @@ class BarberoController extends Controller
             ])->onlyInput('email');
         }
 
+        // Set default profile photo path
+        $profilePhotoPath = self::DEFAULT_PROFILE_PHOTO;
+
+        if ($request->hasFile('foto_perfil')) {
+            $profilePhotoPath = $request->file('foto_perfil')->store('profile_photos', 'public');
+        }
+
         // Use a transaction to ensure that the user, barber profile and role are created successfully
-        $newBarbero =  DB::transaction(function () use ($validatedData, $barberRole) {
+        $newBarbero =  DB::transaction(function () use ($validatedData, $barberRole, $profilePhotoPath) {
 
             // Create a new user
             $newUser = User::create(
                 [
                     'nombres' => $validatedData['nombres'],
                     'primer_apellido' => $validatedData['primer_apellido'],
-                    'segundo_apellido' => $validatedData['segundo_apellido'],
+                    'segundo_apellido' => $validatedData['segundo_apellido'] ?? null,
                     'email' => $validatedData['email'],
                     'password' => $validatedData['password'],
                     'nombre_usuario' => $validatedData['nombre_usuario'],
@@ -68,7 +80,7 @@ class BarberoController extends Controller
                     'estado' => 1,
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => $profilePhotoPath,
                 ]
             );
 
@@ -177,6 +189,7 @@ class BarberoController extends Controller
             ],
             'genero' => 'required|in:M,F,otro',
             'celular' => 'required|string|max:20',
+            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
 
             'estado_disponibilidad' => 'required|in:disponible,ocupado,inactivo',
             'especialidad' => 'required|string|max:150',
@@ -186,7 +199,7 @@ class BarberoController extends Controller
         ]);
 
         // Use a transaction to ensure that the user, barber profile and role are created successfully
-        DB::transaction(function () use ($validatedData, $barbero, $user) {
+        DB::transaction(function () use ($request, $validatedData, $barbero, $user) {
             // Update a new user
             $userData = [
                 'nombres' => $validatedData['nombres'],
@@ -196,11 +209,23 @@ class BarberoController extends Controller
                 'nombre_usuario' => $validatedData['nombre_usuario'],
                 'genero' => $validatedData['genero'],
                 'celular' => $validatedData['celular'],
-                //'foto_perfil' => 'images/default_profile.jpg',
+
             ];
 
             if (!empty($validatedData['password'])) {
                 $userData['password'] = $validatedData['password'];
+            }
+
+            if ($request->hasFile('foto_perfil')) {
+                if (
+                    $user->foto_perfil &&
+                    str_starts_with($user->foto_perfil, 'profile_photos/') &&
+                    Storage::disk('public')->exists($user->foto_perfil)
+                ) {
+                    Storage::disk('public')->delete($user->foto_perfil);
+                }
+
+                $userData['foto_perfil'] = $request->file('foto_perfil')->store('profile_photos', 'public');
             }
 
             // Update the user

@@ -5,6 +5,14 @@
 
 @section('content')
 
+@php
+$fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+
+$fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
+? asset('storage/' . $fotoPerfil)
+: asset($fotoPerfil);
+@endphp
+
 <section class="space-y-6">
 
     <!-- Header interno -->
@@ -46,8 +54,8 @@
 
             <div class="bg-navy px-6 py-8 text-center">
 
-                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-barber-red text-4xl font-bold text-white shadow-panel">
-                    {{ strtoupper(substr($barbero->user?->nombres ?? 'B', 0, 1)) }}
+                <div class="mx-auto h-28 w-28 overflow-hidden rounded-full bg-white p-2 shadow-panel ring-4 ring-cream-100">
+                    <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $barbero->user?->nombres ?? 'barbero' }}" class="h-full w-full rounded-full object-cover">
                 </div>
 
                 <h3 class="mt-4 font-display text-2xl font-bold text-white">

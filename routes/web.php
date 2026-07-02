@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\administrador\BarberoController as AdministradorBarberoController;
 use App\Http\Controllers\administrador\ClienteController as AdministradorClienteController;
 use App\Http\Controllers\administrador\HorarioController as AdministradorHorarioController;
 use App\Http\Controllers\administrador\ServicioController as AdministradorServicioController;
-use App\Http\Controllers\administrador\ProfileController as AdministradorProfileController;
+
 
 
 
@@ -46,7 +47,7 @@ Route::middleware('guest')->group(function () {
     // The route shows the registration form for new clientes
     Route::get('/register', [ClienteController::class, 'create'])->name('register.create');
     // The route to store the new cliente in the database
-    Route::post('/register', [ClienteController::class, 'store'])->name('cliente.store');
+    Route::post('/register', [ClienteController::class, 'store'])->name('register.store');
 });
 
 
@@ -55,6 +56,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // The route to logout the user, 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // The routes for profile of the administrador, including edit and update
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 
@@ -62,12 +68,6 @@ Route::middleware('auth')->group(function () {
 
 //Private Routes with authentication and role-based access control for Administrador
 Route::middleware(['auth', 'role:administrador'])->group(function () {
-
-
-    // The routes for profile of the administrador, including edit and update
-    // The routes for profile of the administrador, including edit and update
-    Route::get('/profile', [AdministradorProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [AdministradorProfileController::class, 'update'])->name('profile.update');
 
 
     Route::get('/dashboard', function () {

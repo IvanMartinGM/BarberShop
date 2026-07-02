@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\administrador;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,28 +10,49 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-
     public function show()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        return view('administrador.profile.show', compact('user'));
+        if ($user->hasRole('administrador')) {
+            return view('profile.administrador.show', compact('user'));
+        }
+
+        if ($user->hasRole('barbero')) {
+            return view('profile.barbero.show', compact('user'));
+        }
+
+        if ($user->hasRole('cliente')) {
+            return view('profile.cliente.show', compact('user'));
+        }
+
+        abort(403, 'No tienes un rol válido asignado.');
     }
-
-
 
     public function edit()
     {
-        // Usuario autenticado 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        return view('administrador.profile.edit', compact('user'));
+        if ($user->hasRole('administrador')) {
+            return view('profile.administrador.edit', compact('user'));
+        }
+
+        if ($user->hasRole('barbero')) {
+            return view('profile.barbero.edit', compact('user'));
+        }
+
+        if ($user->hasRole('cliente')) {
+            return view('profile.cliente.edit', compact('user'));
+        }
+
+        abort(403, 'No tienes un rol válido asignado.');
     }
 
     public function update(Request $request): RedirectResponse
     {
-        /** Usuario autenticado */
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         $validatedData = $request->validate([
@@ -56,7 +76,7 @@ class ProfileController extends Controller
 
             'genero' => 'nullable|in:M,F,otro',
             'celular' => 'nullable|string|max:20',
-
+            'foto_perfil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -70,6 +90,11 @@ class ProfileController extends Controller
             'celular' => $validatedData['celular'] ?? null,
         ];
 
+        if ($request->hasFile('foto_perfil')) {
+            $userData['foto_perfil'] = $request->file('foto_perfil')
+                ->store('profile/users', 'public');
+        }
+
         if (!empty($validatedData['password'])) {
             $userData['password'] = Hash::make($validatedData['password']);
         }
@@ -77,7 +102,7 @@ class ProfileController extends Controller
         $user->forceFill($userData)->save();
 
         return redirect()
-            ->route('profile.edit')
+            ->route('profile.show')
             ->with('status', 'Perfil actualizado correctamente.');
     }
 }

@@ -5,6 +5,14 @@
 
 @section('content')
 
+@php
+$fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+
+$fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
+? asset('storage/' . $fotoPerfil)
+: asset($fotoPerfil);
+@endphp
+
 <section class="max-w-5xl mx-auto">
 
     <!-- Header interno -->
@@ -19,8 +27,7 @@
             </p>
         </div>
 
-        <a href="{{ route('barbero.show', $barbero->id) }}"
-           class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
+        <a href="{{ route('barbero.show', $barbero->id) }}" class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
             Volver al perfil
         </a>
     </div>
@@ -28,7 +35,7 @@
     <!-- Card principal -->
     <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
-        <form method="POST" action="{{ route('barbero.update', $barbero->id) }}" class="p-6 sm:p-8 space-y-8">
+        <form method="POST" action="{{ route('barbero.update', $barbero->id) }}" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-8">
             @csrf
             @method('PUT')
 
@@ -44,6 +51,34 @@
                     </p>
                 </div>
 
+
+                <div class="mb-6 rounded-panel border border-cream-200 bg-cream-50 p-4 sm:p-5">
+                    <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+
+                        <div class="flex justify-center sm:justify-start">
+                            <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $barbero->user?->nombres }}" class="h-24 w-24 rounded-full object-cover bg-white p-2 ring-4 ring-white shadow-card">
+                        </div>
+
+                        <div class="flex-1">
+                            <label for="foto_perfil" class="block text-sm font-semibold text-navy mb-2">
+                                Cambiar foto de perfil
+                            </label>
+
+                            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-card border border-cream-300 bg-white text-sm text-ink file:mr-4 file:border-0 file:bg-barber-red file:px-4 file:py-3 file:text-sm file:font-bold file:text-white hover:file:bg-barber-red-700 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+
+                            <p class="mt-2 text-xs text-ink-600">
+                                Formatos permitidos: JPG, JPEG, PNG o WEBP. Tamaño máximo: 2 MB.
+                                Si no seleccionas una nueva imagen, se conservará la foto actual.
+                            </p>
+
+                            @error('foto_perfil')
+                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
                     <div>
@@ -51,18 +86,10 @@
                             Nombres *
                         </label>
 
-                        <input
-                            type="text"
-                            id="nombres"
-                            name="nombres"
-                            value="{{ old('nombres', $barbero->user?->nombres) }}"
-                            required
-                            placeholder="Ivan Martin"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="text" id="nombres" name="nombres" value="{{ old('nombres', $barbero->user?->nombres) }}" required placeholder="Ivan Martin" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('nombres')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -71,18 +98,10 @@
                             Primer Apellido *
                         </label>
 
-                        <input
-                            type="text"
-                            id="primer_apellido"
-                            name="primer_apellido"
-                            value="{{ old('primer_apellido', $barbero->user?->primer_apellido) }}"
-                            required
-                            placeholder="Gomez"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="text" id="primer_apellido" name="primer_apellido" value="{{ old('primer_apellido', $barbero->user?->primer_apellido) }}" required placeholder="Gomez" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('primer_apellido')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -91,17 +110,10 @@
                             Segundo Apellido
                         </label>
 
-                        <input
-                            type="text"
-                            id="segundo_apellido"
-                            name="segundo_apellido"
-                            value="{{ old('segundo_apellido', $barbero->user?->segundo_apellido) }}"
-                            placeholder="Magaña"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="text" id="segundo_apellido" name="segundo_apellido" value="{{ old('segundo_apellido', $barbero->user?->segundo_apellido) }}" placeholder="Magaña" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('segundo_apellido')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -110,17 +122,17 @@
                             Celular
                         </label>
 
-                        <input
-                            type="tel"
-                            id="celular"
-                            name="celular"
-                            value="{{ old('celular', $barbero->user?->celular) }}"
-                            placeholder="+52 333 456 7890"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input 
+                        type="tel" 
+                        id="celular"
+                        name="celular" 
+                        value="{{ old('celular', $barbero->user?->celular) }}" 
+                        required 
+                        placeholder="+52 333 456 7890" 
+                        class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('celular')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -129,18 +141,10 @@
                             Correo Electrónico *
                         </label>
 
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value="{{ old('email', $barbero->user?->email) }}"
-                            required
-                            placeholder="barbero@email.com"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="email" id="email" name="email" value="{{ old('email', $barbero->user?->email) }}" required placeholder="barbero@email.com" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('email')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -149,18 +153,10 @@
                             Nombre de Usuario *
                         </label>
 
-                        <input
-                            type="text"
-                            id="nombre_usuario"
-                            name="nombre_usuario"
-                            value="{{ old('nombre_usuario', $barbero->user?->nombre_usuario) }}"
-                            required
-                            placeholder="ivangomez123"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="text" id="nombre_usuario" name="nombre_usuario" value="{{ old('nombre_usuario', $barbero->user?->nombre_usuario) }}" required placeholder="ivangomez123" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('nombre_usuario')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -169,11 +165,7 @@
                             Género
                         </label>
 
-                        <select
-                            id="genero"
-                            name="genero"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <select id="genero" name="genero"  required class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                             <option value="">Selecciona una opción</option>
                             <option value="M" {{ old('genero', $barbero->user?->genero) === 'M' ? 'selected' : '' }}>
                                 Masculino
@@ -187,7 +179,7 @@
                         </select>
 
                         @error('genero')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -213,11 +205,7 @@
                             Estado de disponibilidad *
                         </label>
 
-                        <select
-                            id="estado_disponibilidad"
-                            name="estado_disponibilidad"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <select id="estado_disponibilidad" name="estado_disponibilidad" required class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                             <option value="">Selecciona una opción</option>
                             <option value="disponible" {{ old('estado_disponibilidad', $barbero->estado_disponibilidad) === 'disponible' ? 'selected' : '' }}>
                                 Disponible
@@ -231,7 +219,7 @@
                         </select>
 
                         @error('estado_disponibilidad')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -240,17 +228,10 @@
                             Especialidad *
                         </label>
 
-                        <input
-                            type="text"
-                            id="especialidad"
-                            name="especialidad"
-                            value="{{ old('especialidad', $barbero->especialidad) }}"
-                            placeholder="Corte clásico, barba, fades..."
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="text" id="especialidad" name="especialidad" required value="{{ old('especialidad', $barbero->especialidad) }}" placeholder="Corte clásico, barba, fades..." class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('especialidad')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -259,16 +240,10 @@
                             Fecha de contratación
                         </label>
 
-                        <input
-                            type="date"
-                            id="fecha_contratacion"
-                            name="fecha_contratacion"
-                            value="{{ old('fecha_contratacion', $barbero->fecha_contratacion) }}"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="date" id="fecha_contratacion" required name="fecha_contratacion" value="{{ old('fecha_contratacion', $barbero->fecha_contratacion) }}" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('fecha_contratacion')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -277,18 +252,10 @@
                             Años de experiencia
                         </label>
 
-                        <input
-                            type="number"
-                            id="experiencia_anos"
-                            name="experiencia_anos"
-                            value="{{ old('experiencia_anos', $barbero->experiencia_anos) }}"
-                            min="0"
-                            max="80"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="number" id="experiencia_anos" name="experiencia_anos" required value="{{ old('experiencia_anos', $barbero->experiencia_anos) }}" min="0" max="80" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('experiencia_anos')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -297,16 +264,10 @@
                             Biografía
                         </label>
 
-                        <textarea
-                            id="biografia"
-                            name="biografia"
-                            rows="4"
-                            placeholder="Describe brevemente la experiencia, estilo o especialidades del barbero..."
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors resize-none"
-                        >{{ old('biografia', $barbero->biografia) }}</textarea>
+                        <textarea id="biografia" name="biografia" rows="4" placeholder="Describe brevemente la experiencia, estilo o especialidades del barbero..." class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors resize-none">{{ old('biografia', $barbero->biografia) }}</textarea>
 
                         @error('biografia')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -332,16 +293,10 @@
                             Nueva contraseña
                         </label>
 
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Dejar vacío para no cambiar"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="password" id="password" name="password" placeholder="Dejar vacío para no cambiar" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('password')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -350,16 +305,10 @@
                             Confirmar nueva contraseña
                         </label>
 
-                        <input
-                            type="password"
-                            id="password_confirmation"
-                            name="password_confirmation"
-                            placeholder="Repite la nueva contraseña"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Repite la nueva contraseña" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('password_confirmation')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -369,15 +318,11 @@
             <!-- Botones -->
             <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-cream-200 pt-6">
 
-                <a href="{{ route('barbero.show', $barbero->id) }}"
-                   class="inline-flex items-center justify-center rounded-panel bg-cream-200 px-6 py-3 text-sm font-bold text-navy hover:bg-cream-300 transition-colors">
+                <a href="{{ route('barbero.show', $barbero->id) }}" class="inline-flex items-center justify-center rounded-panel bg-cream-200 px-6 py-3 text-sm font-bold text-navy hover:bg-cream-300 transition-colors">
                     Cancelar
                 </a>
 
-                <button
-                    type="submit"
-                    class="rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                >
+                <button type="submit" class="rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                     Actualizar barbero
                 </button>
 

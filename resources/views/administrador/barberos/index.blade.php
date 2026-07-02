@@ -106,14 +106,22 @@
 
                     @forelse ($barberos as $barbero)
 
+                    @php
+                    $fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+
+                    $fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
+                    ? asset('storage/' . $fotoPerfil)
+                    : asset($fotoPerfil);
+                    @endphp
+
                     <tr class="hover:bg-cream-50 transition-colors">
 
                         <!-- Barbero -->
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
 
-                                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
-                                    {{ strtoupper(substr($barbero->usuario->nombres ?? 'B', 0, 1)) }}
+                                <div class="h-11 w-11 overflow-hidden rounded-full bg-white p-1 shadow-card ring-2 ring-cream-200">
+                                    <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $barbero->user?->nombres ?? 'barbero' }}" class="h-full w-full rounded-full object-cover">
                                 </div>
 
                                 <div>
@@ -229,14 +237,23 @@
 
             @forelse ($barberos as $barbero)
 
+            @php
+            $fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+
+            $fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
+            ? asset('storage/' . $fotoPerfil)
+            : asset($fotoPerfil);
+            @endphp
+
+            <!-- Barbero -->
             <article class="p-5">
 
                 <div class="flex items-start justify-between gap-4">
 
                     <div class="flex items-center gap-3">
 
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
-                            {{ strtoupper(substr($barbero->user->nombres ?? 'B', 0, 1)) }}
+                        <div class="h-12 w-12 overflow-hidden rounded-full bg-white p-1 shadow-card ring-2 ring-cream-200">
+                            <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $barbero->user?->nombres ?? 'barbero' }}" class="h-full w-full rounded-full object-cover">
                         </div>
 
                         <div>

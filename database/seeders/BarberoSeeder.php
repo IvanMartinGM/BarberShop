@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 
 class BarberoSeeder extends Seeder
 {
+    private const DEFAULT_PROFILE_PHOTO = 'images/default-avatar.svg';
+
     public function run(): void
     {
         $barberoRole = Role::where('nombre', 'barbero')->first();
@@ -31,7 +33,7 @@ class BarberoSeeder extends Seeder
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
                     'genero' => 'M',
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                     'celular' => '3335556677',
                 ],
                 'barbero' => [
@@ -55,7 +57,7 @@ class BarberoSeeder extends Seeder
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
                     'genero' => 'M',
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                     'celular' => '3336667788',
                 ],
                 'barbero' => [
@@ -79,7 +81,7 @@ class BarberoSeeder extends Seeder
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
                     'genero' => 'M',
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                     'celular' => '3337778899',
                 ],
                 'barbero' => [

@@ -80,7 +80,7 @@
                     <span class="hidden md:inline">Clientes</span>
                 </a>
 
-                <! -- Horarios -->
+                <!-- Horarios -->
                     <a href="{{ route('horario.index') }}" class="flex items-center gap-3 rounded-panel px-4 py-3 text-sm font-bold transition-colors
                     {{ request()->routeIs('horario.*')
                     ? 'bg-barber-red text-white'
@@ -143,6 +143,16 @@
 
             <!-- Bottom Navigation -->
             <div class="border-t border-white/10 px-3 md:px-4 py-4 space-y-2">
+
+                <a href="{{ route('profile.show') }}" title="Mi perfil" class="flex w-full items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+    {{ request()->routeIs('profile.*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
+                    <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 7.5a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a8.25 8.25 0 0 1 15 0" />
+                    </svg>
+
+                    <span class="hidden md:inline">Mi perfil</span>
+                </a>
+
                 <!-- Logout -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -187,23 +197,32 @@
                     </div>
 
                     <!-- Admin Profile -->
-                    <div class="ml-auto flex items-center gap-3 shrink-0">
+                    @php
+                    $authUser = auth()->user();
 
+                    $adminFotoPerfil = $authUser?->foto_perfil ?? 'images/default-avatar.svg';
+
+                    $adminFotoPerfilUrl = str_starts_with($adminFotoPerfil, 'profile_photos/')
+                    ? asset('storage/' . $adminFotoPerfil)
+                    : asset($adminFotoPerfil);
+                    @endphp
+
+                    <!-- Admin Profile -->
+                    <a href="{{ route('profile.show') }}" title="Ver mi perfil" class="ml-auto flex items-center gap-3 shrink-0 rounded-panel px-2 py-2 hover:bg-cream-100 transition-colors">
                         <div class="hidden sm:block text-right">
                             <p class="text-sm font-semibold text-ink">
-                                {{ auth()->user()->nombres ?? 'Administrador' }}
+                                {{ $authUser?->nombres ?? 'Administrador' }}
                             </p>
 
                             <p class="text-xs text-ink-500">
-                                Admin
+                                Mi perfil
                             </p>
                         </div>
 
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
-                            {{ strtoupper(substr(auth()->user()->nombres ?? 'A', 0, 1)) }}
+                        <div class="h-10 w-10 overflow-hidden rounded-full bg-white p-1 shadow-card ring-2 ring-cream-200">
+                            <img src="{{ $adminFotoPerfilUrl }}" alt="Foto de perfil de {{ $authUser?->nombres ?? 'Administrador' }}" class="h-full w-full rounded-full object-cover">
                         </div>
-
-                    </div>
+                    </a>
 
                 </div>
 
