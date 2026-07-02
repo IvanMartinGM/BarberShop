@@ -146,7 +146,7 @@
                         Agregar barbero
                     </a>
 
-                    <a href="#servicios.create"
+                    <a href="{{ route('servicio.create') }}"
                        class="flex w-full items-center justify-center rounded-panel border border-cream-300 bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-cream-100 transition-colors">
                         Agregar servicio
                     </a>

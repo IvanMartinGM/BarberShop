@@ -7,6 +7,7 @@ use App\Http\Controllers\administrador\BarberoController as AdministradorBarbero
 use App\Http\Controllers\administrador\ClienteController as AdministradorClienteController;
 use App\Http\Controllers\administrador\HorarioController as AdministradorHorarioController;
 use App\Http\Controllers\administrador\ServicioController as AdministradorServicioController;
+use App\Http\Controllers\administrador\ProfileController as AdministradorProfileController;
 
 
 
@@ -63,9 +64,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:administrador'])->group(function () {
 
 
-    // The routes for the administrator profile management
-    Route::get('/profile', [AdministradorClienteController::class, 'editProfile'])->name('profile.edit');
-    Route::put('/profile', [AdministradorClienteController::class, 'updateProfile'])->name('profile.update');
+    // The routes for profile of the administrador, including edit and update
+    // The routes for profile of the administrador, including edit and update
+    Route::get('/profile', [AdministradorProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [AdministradorProfileController::class, 'update'])->name('profile.update');
 
 
     Route::get('/dashboard', function () {
@@ -136,9 +138,6 @@ Route::middleware(['auth', 'role:administrador'])->group(function () {
     Route::get('/admin/servicios/{id}/edit', [AdministradorServicioController::class, 'edit'])->name('servicio.edit');
     Route::put('/admin/servicios/{id}', [AdministradorServicioController::class, 'update'])->name('servicio.update');
     Route::delete('/admin/servicios/{id}', [AdministradorServicioController::class, 'destroy'])->name('servicio.destroy');
-
-
-    
 });
 
 //Private Routes with authentication and role-based access control for Barbero

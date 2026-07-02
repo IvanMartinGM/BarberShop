@@ -29,6 +29,7 @@ class ServicioController extends Controller
             'precio_base' => 'required|numeric|min:0|max:999999.99',
             'duracion_minutos' => 'required|integer|min:1|max:600',
             'categoria' => 'nullable|string|max:60',
+            'imagen_servicio' => 'nullable|string|max:255',
         ]);
 
         Servicio::create([
@@ -37,6 +38,7 @@ class ServicioController extends Controller
             'precio_base' => $validatedData['precio_base'],
             'duracion_minutos' => $validatedData['duracion_minutos'],
             'categoria' => $validatedData['categoria'] ?? null,
+            'imagen_servicio' => $validatedData['imagen_servicio'] ?? null,
             'estado' => 1,
         ]);
 
@@ -100,6 +102,7 @@ class ServicioController extends Controller
             'precio_base' => 'required|numeric|min:0|max:999999.99',
             'duracion_minutos' => 'required|integer|min:1|max:600',
             'categoria' => 'nullable|string|max:60',
+            'imagen_servicio' => 'nullable|string|max:255',
             'estado' => 'required|boolean',
         ]);
 
@@ -109,6 +112,7 @@ class ServicioController extends Controller
             'precio_base' => $validatedData['precio_base'],
             'duracion_minutos' => $validatedData['duracion_minutos'],
             'categoria' => $validatedData['categoria'] ?? null,
+            'imagen_servicio' => $validatedData['imagen_servicio'] ?? null,
             'estado' => $validatedData['estado'],
         ]);
 

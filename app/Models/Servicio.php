@@ -15,6 +15,7 @@ class Servicio extends Model
         'precio_base',
         'duracion_minutos',
         'categoria',
+        'imagen_servicio',
         'estado',
     ];
 

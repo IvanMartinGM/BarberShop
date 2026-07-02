@@ -15,6 +15,7 @@ return new class extends Migration
             $table->decimal('precio_base', 8, 2);
             $table->integer('duracion_minutos');
             $table->string('categoria', 60)->nullable();
+            $table->string('imagen_servicio', 255)->nullable();
             $table->tinyInteger('estado')->default(1);
             $table->timestamps();
         });
