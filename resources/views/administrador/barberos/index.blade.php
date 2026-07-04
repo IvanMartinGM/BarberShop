@@ -107,11 +107,19 @@
                     @forelse ($barberos as $barbero)
 
                     @php
-                    $fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+                    $defaultProfilePhoto = 'images/default-avatar.svg';
 
-                    $fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
-                    ? asset('storage/' . $fotoPerfil)
-                    : asset($fotoPerfil);
+                    $fotoPerfil = $barbero->user?->foto_perfil;
+
+                    if (!$fotoPerfil) {
+                    $fotoPerfilUrl = asset($defaultProfilePhoto);
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+                    $fotoPerfilUrl = $fotoPerfil;
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+                    $fotoPerfilUrl = asset($fotoPerfil);
+                    } else {
+                    $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+                    }
                     @endphp
 
                     <tr class="hover:bg-cream-50 transition-colors">
@@ -237,13 +245,21 @@
 
             @forelse ($barberos as $barbero)
 
-            @php
-            $fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+             @php
+                    $defaultProfilePhoto = 'images/default-avatar.svg';
 
-            $fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
-            ? asset('storage/' . $fotoPerfil)
-            : asset($fotoPerfil);
-            @endphp
+                    $fotoPerfil = $barbero->user?->foto_perfil;
+
+                    if (!$fotoPerfil) {
+                    $fotoPerfilUrl = asset($defaultProfilePhoto);
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+                    $fotoPerfilUrl = $fotoPerfil;
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+                    $fotoPerfilUrl = asset($fotoPerfil);
+                    } else {
+                    $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+                    }
+                    @endphp
 
             <!-- Barbero -->
             <article class="p-5">

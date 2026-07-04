@@ -99,14 +99,30 @@
 
                     @forelse ($clientes as $cliente)
 
+                    @php
+                    $defaultProfilePhoto = 'images/default-avatar.svg';
+
+                    $fotoPerfil = $cliente->user?->foto_perfil;
+
+                    if (!$fotoPerfil) {
+                    $fotoPerfilUrl = asset($defaultProfilePhoto);
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+                    $fotoPerfilUrl = $fotoPerfil;
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+                    $fotoPerfilUrl = asset($fotoPerfil);
+                    } else {
+                    $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+                    }
+                    @endphp
+
                     <tr class="hover:bg-cream-50 transition-colors">
 
                         <!-- Cliente -->
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
 
-                                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
-                                    {{ strtoupper(substr($cliente->user?->nombres ?? 'C', 0, 1)) }}
+                                <div class="h-11 w-11 overflow-hidden rounded-full bg-white p-1 shadow-card ring-2 ring-cream-200">
+                                    <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $cliente->user?->nombres ?? 'cliente' }}" class="h-full w-full rounded-full object-cover">
                                 </div>
 
                                 <div>
@@ -214,14 +230,30 @@
 
             @forelse ($clientes as $cliente)
 
+            @php
+            $defaultProfilePhoto = 'images/default-avatar.svg';
+
+            $fotoPerfil = $cliente->user?->foto_perfil;
+
+            if (!$fotoPerfil) {
+            $fotoPerfilUrl = asset($defaultProfilePhoto);
+            } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+            $fotoPerfilUrl = $fotoPerfil;
+            } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+            $fotoPerfilUrl = asset($fotoPerfil);
+            } else {
+            $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+            }
+            @endphp
+
             <article class="p-5">
 
                 <div class="flex items-start justify-between gap-4">
 
                     <div class="flex items-center gap-3">
 
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-white font-bold shadow-card">
-                            {{ strtoupper(substr($cliente->user?->nombres ?? 'C', 0, 1)) }}
+                        <div class="h-12 w-12 overflow-hidden rounded-full bg-white p-1 shadow-card ring-2 ring-cream-200">
+                            <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $cliente->user?->nombres ?? 'cliente' }}" class="h-full w-full rounded-full object-cover">
                         </div>
 
                         <div>

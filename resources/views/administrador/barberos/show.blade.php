@@ -6,11 +6,19 @@
 @section('content')
 
 @php
-$fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+$defaultProfilePhoto = 'images/default-avatar.svg';
 
-$fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
-? asset('storage/' . $fotoPerfil)
-: asset($fotoPerfil);
+$fotoPerfil = $barbero->user?->foto_perfil;
+
+if (!$fotoPerfil) {
+$fotoPerfilUrl = asset($defaultProfilePhoto);
+} elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+$fotoPerfilUrl = $fotoPerfil;
+} elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+$fotoPerfilUrl = asset($fotoPerfil);
+} else {
+$fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+}
 @endphp
 
 <section class="space-y-6">
@@ -40,6 +48,10 @@ $fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
 
             <a href="{{ route('barbero.horarios.edit', $barbero->id) }}" class="inline-flex items-center justify-center rounded-panel bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-800 transition-colors">
                 Gestionar horarios
+            </a>
+
+            <a href="{{ route('barbero.servicios.edit', $barbero->id) }}" class="inline-flex items-center justify-center rounded-panel bg-white border border-barber-red px-5 py-3 text-sm font-bold text-barber-red hover:bg-barber-red hover:text-white transition-colors">
+                Gestionar servicios
             </a>
 
         </div>

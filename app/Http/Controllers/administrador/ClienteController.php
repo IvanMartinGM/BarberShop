@@ -10,9 +10,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\Storage;
 
 class ClienteController extends Controller
 {
+    private const DEFAULT_PROFILE_PHOTO = 'images/default-avatar.svg';
+    private const PROFILE_PHOTO_BASE_DIRECTORY = 'profile/users';
+
     public function create()
     {
         return view('administrador.clientes.create');
@@ -32,6 +36,7 @@ class ClienteController extends Controller
             'genero' => 'required|in:M,F,otro',
             'fecha_nacimiento' => 'required|date',
             'celular' => 'required|string|max:20',
+            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
 
         ]);
 
@@ -48,7 +53,7 @@ class ClienteController extends Controller
         }
 
         //Use a transaction to ensure that both the user and the cliente are created successfully
-        DB::transaction(function () use ($validatedData, $clienterol) {
+        DB::transaction(function () use ($validatedData, $clienterol, $request) {
 
             // Create a new user
             $newUser = User::create(
@@ -64,9 +69,18 @@ class ClienteController extends Controller
                     'estado' => 1,
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                 ]
             );
+
+            if ($request->hasFile('foto_perfil')) {
+                $profilePhotoPath = $request->file('foto_perfil')
+                    ->store(self::PROFILE_PHOTO_BASE_DIRECTORY . '/' . $newUser->id, 'public');
+
+                $newUser->forceFill([
+                    'foto_perfil' => $profilePhotoPath,
+                ])->save();
+            }
 
             $newUser->cliente()->create([
                 'fecha_nacimiento' => $validatedData['fecha_nacimiento'],
@@ -170,12 +184,13 @@ class ClienteController extends Controller
             ],
             'genero' => 'required|in:M,F,otro',
             'celular' => 'required|string|max:20',
+            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'estado' => 'required|boolean',
         ]);
 
 
 
-        DB::transaction(function () use ($validatedData, $user, $cliente) {
+        DB::transaction(function () use ($validatedData, $user, $cliente, $request) {
             // Update the user data
             $userData = [
                 'nombres' => $validatedData['nombres'],
@@ -190,6 +205,23 @@ class ClienteController extends Controller
 
             if (!empty($validatedData['password'])) {
                 $userData['password'] = $validatedData['password'];
+            }
+
+            if ($request->hasFile('foto_perfil')) {
+                $fotoAnterior = $user->foto_perfil;
+
+                if (
+                    $fotoAnterior &&
+                    !str_starts_with($fotoAnterior, 'images/') &&
+                    !str_starts_with($fotoAnterior, 'http://') &&
+                    !str_starts_with($fotoAnterior, 'https://') &&
+                    Storage::disk('public')->exists($fotoAnterior)
+                ) {
+                    Storage::disk('public')->delete($fotoAnterior);
+                }
+
+                $userData['foto_perfil'] = $request->file('foto_perfil')
+                    ->store(self::PROFILE_PHOTO_BASE_DIRECTORY . '/' . $user->id, 'public');
             }
 
             $user->update($userData);

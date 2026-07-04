@@ -35,6 +35,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Redirect the user to the intended page after successful login depends on the role of the user
+            /* var User */ 
             $user = Auth::user();
 
             if ($user->hasRole('administrador')) {

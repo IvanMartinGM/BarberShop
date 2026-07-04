@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\cliente;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Role;

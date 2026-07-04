@@ -7,24 +7,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
+
+    private const DEFAULT_PROFILE_PHOTO = 'images/default-avatar.svg';
+    private const PROFILE_PHOTO_BASE_DIRECTORY = 'profile/users';
     public function show()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if ($user->hasRole('administrador')) {
-            return view('profile.administrador.show', compact('user'));
+            return view('administrador.profile.show', compact('user'));
         }
 
         if ($user->hasRole('barbero')) {
-            return view('profile.barbero.show', compact('user'));
+            return view('barbero.profile.show', compact('user'));
         }
 
         if ($user->hasRole('cliente')) {
-            return view('profile.cliente.show', compact('user'));
+            return view('cliente.profile.show', compact('user'));
         }
 
         abort(403, 'No tienes un rol válido asignado.');
@@ -36,15 +41,15 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         if ($user->hasRole('administrador')) {
-            return view('profile.administrador.edit', compact('user'));
+            return view('administrador.profile.edit', compact('user'));
         }
 
         if ($user->hasRole('barbero')) {
-            return view('profile.barbero.edit', compact('user'));
+            return view('barbero.profile.edit', compact('user'));
         }
 
         if ($user->hasRole('cliente')) {
-            return view('profile.cliente.edit', compact('user'));
+            return view('cliente.profile.edit', compact('user'));
         }
 
         abort(403, 'No tienes un rol válido asignado.');
@@ -52,7 +57,7 @@ class ProfileController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+       /** @var User $user */
         $user = Auth::user();
 
         $validatedData = $request->validate([
@@ -91,15 +96,27 @@ class ProfileController extends Controller
         ];
 
         if ($request->hasFile('foto_perfil')) {
+            $fotoAnterior = $user->foto_perfil;
+
+            if (
+                $fotoAnterior &&
+                !str_starts_with($fotoAnterior, 'images/') &&
+                !str_starts_with($fotoAnterior, 'http://') &&
+                !str_starts_with($fotoAnterior, 'https://') &&
+                Storage::disk('public')->exists($fotoAnterior)
+            ) {
+                Storage::disk('public')->delete($fotoAnterior);
+            }
+
             $userData['foto_perfil'] = $request->file('foto_perfil')
-                ->store('profile/users', 'public');
+                ->store(self::PROFILE_PHOTO_BASE_DIRECTORY . '/' . $user->id, 'public');
         }
 
         if (!empty($validatedData['password'])) {
-            $userData['password'] = Hash::make($validatedData['password']);
+            $userData['password'] = $validatedData['password'];
         }
 
-        $user->forceFill($userData)->save();
+        $user->update($userData);
 
         return redirect()
             ->route('profile.show')

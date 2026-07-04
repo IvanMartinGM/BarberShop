@@ -1,9 +1,43 @@
-@extends('layouts.admin')
+@extends('layouts.barbero')
 
-@section('title', 'Mi perfil - BarberShop')
-@section('page-title', 'Mi perfil')
+@section('title', 'Editar perfil - BarberShop')
+@section('page-title', 'Editar perfil')
 
 @section('content')
+
+@php
+    $defaultProfilePhoto = 'images/default-avatar.svg';
+
+    $fotoPerfil = $user->foto_perfil;
+
+    if (!$fotoPerfil) {
+        $profileImage = asset($defaultProfilePhoto);
+    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+        $profileImage = $fotoPerfil;
+    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+        $profileImage = asset($fotoPerfil);
+    } else {
+        $profileImage = asset('storage/' . $fotoPerfil);
+    }
+
+    $barbero = $user->barbero;
+
+    $estadoDisponibilidad = $barbero?->estado_disponibilidad;
+
+    $estadoDisponibilidadTexto = match ($estadoDisponibilidad) {
+        'disponible' => 'Disponible',
+        'ocupado' => 'Ocupado',
+        'inactivo' => 'Inactivo',
+        default => 'No registrado',
+    };
+
+    $estadoDisponibilidadClass = match ($estadoDisponibilidad) {
+        'disponible' => 'bg-success-light text-success',
+        'ocupado' => 'bg-warning-light text-warning',
+        'inactivo' => 'bg-danger-light text-danger',
+        default => 'bg-cream-100 text-ink-500',
+    };
+@endphp
 
 <section class="space-y-6">
 
@@ -12,18 +46,25 @@
 
         <div>
             <h2 class="font-display text-3xl font-bold text-navy">
-                Mi perfil
+                Editar perfil
             </h2>
 
             <p class="mt-2 text-sm text-ink-600">
-                Actualiza la información de tu cuenta administrativa.
+                Actualiza la información de tu cuenta de barbero.
             </p>
         </div>
 
-        <a href="{{ route('administrador.dashboard') }}"
-           class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
-            Volver al dashboard
-        </a>
+        <div class="flex flex-col sm:flex-row gap-3">
+            <a href="{{ route('profile.show') }}"
+               class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
+                Volver al perfil
+            </a>
+
+            <a href="{{ route('barbero.dashboard') }}"
+               class="inline-flex items-center justify-center rounded-panel bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-800 transition-colors">
+                Dashboard
+            </a>
+        </div>
 
     </div>
 
@@ -35,27 +76,31 @@
 
             <div class="bg-navy px-6 py-8 text-center">
 
-                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-barber-red text-4xl font-bold text-white shadow-panel">
-                    {{ strtoupper(substr($user->nombres ?? 'A', 0, 1)) }}
+                <div class="mx-auto h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-cream shadow-panel">
+                    <img
+                        src="{{ $profileImage }}"
+                        alt="Foto de perfil de {{ $user->nombres ?? 'barbero' }}"
+                        class="h-full w-full object-cover"
+                    >
                 </div>
 
                 <h3 class="mt-4 font-display text-2xl font-bold text-white">
-                    {{ $user->nombres ?? 'Administrador' }}
+                    {{ $user->nombres ?? 'Barbero' }}
                     {{ $user->primer_apellido ?? '' }}
                 </h3>
 
                 <p class="mt-1 text-sm text-cream-200">
-                    Cuenta administrativa
+                    Cuenta de barbero
                 </p>
 
             </div>
 
             <div class="p-6 space-y-5">
 
-                <!-- Estado -->
+                <!-- Estado de cuenta -->
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Estado
+                        Estado de cuenta
                     </p>
 
                     <div class="mt-2">
@@ -71,36 +116,49 @@
                     </div>
                 </div>
 
-                <!-- Correo -->
+                <!-- Disponibilidad -->
                 <div class="border-t border-cream-200 pt-5">
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Correo electrónico
+                        Disponibilidad
+                    </p>
+
+                    <div class="mt-2">
+                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold {{ $estadoDisponibilidadClass }}">
+                            {{ $estadoDisponibilidadTexto }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Tipo de cuenta -->
+                <div class="border-t border-cream-200 pt-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                        Tipo de cuenta
                     </p>
 
                     <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $user->email ?? 'No registrado' }}
+                        Barbero
                     </p>
                 </div>
 
-                <!-- Nombre usuario -->
+                <!-- Especialidad -->
                 <div class="border-t border-cream-200 pt-5">
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Nombre de usuario
+                        Especialidad
                     </p>
 
                     <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $user->nombre_usuario ?? 'No registrado' }}
+                        {{ $barbero?->especialidad ?? 'No registrada' }}
                     </p>
                 </div>
 
-                <!-- Celular -->
+                <!-- Experiencia -->
                 <div class="border-t border-cream-200 pt-5">
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Celular
+                        Experiencia
                     </p>
 
                     <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $user->celular ?? 'No registrado' }}
+                        {{ $barbero?->experiencia_anos ?? 0 }} años
                     </p>
                 </div>
 
@@ -111,9 +169,60 @@
         <!-- Formulario -->
         <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
-            <form method="POST" action="{{ route('profile.update') }}" class="p-6 sm:p-8 space-y-8">
+            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-8">
                 @csrf
                 @method('PUT')
+
+                <!-- Foto de perfil -->
+                <div>
+
+                    <div class="mb-5 border-b border-cream-200 pb-4">
+                        <h3 class="font-display text-2xl font-bold text-navy">
+                            Foto de perfil
+                        </h3>
+
+                        <p class="mt-1 text-sm text-ink-600">
+                            Actualiza la imagen que se mostrará en tu perfil de barbero.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-[180px_minmax(0,1fr)] gap-6 items-center">
+
+                        <div class="flex justify-center md:justify-start">
+                            <div class="h-32 w-32 overflow-hidden rounded-full border-4 border-cream-200 bg-cream shadow-card">
+                                <img
+                                    src="{{ $profileImage }}"
+                                    alt="Foto de perfil actual"
+                                    class="h-full w-full object-cover"
+                                >
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="foto_perfil" class="block text-sm font-semibold text-navy mb-2">
+                                Nueva foto de perfil
+                            </label>
+
+                            <input
+                                type="file"
+                                id="foto_perfil"
+                                name="foto_perfil"
+                                accept="image/png,image/jpeg,image/jpg,image/webp"
+                                class="w-full rounded-card border border-cream-300 bg-white px-4 py-3 text-sm text-ink file:mr-4 file:rounded-card file:border-0 file:bg-barber-red file:px-4 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-barber-red-700 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
+                            >
+
+                            @error('foto_perfil')
+                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                            @enderror
+
+                            <p class="mt-2 text-xs text-ink-500">
+                                Formatos permitidos: JPG, JPEG, PNG o WEBP. Tamaño máximo: 2 MB.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
 
                 <!-- Información personal -->
                 <div>
@@ -124,7 +233,7 @@
                         </h3>
 
                         <p class="mt-1 text-sm text-ink-600">
-                            Estos datos pertenecen a tu usuario administrador.
+                            Estos datos pertenecen a tu usuario de barbero.
                         </p>
                     </div>
 
@@ -308,6 +417,77 @@
 
                 </div>
 
+                <!-- Información profesional -->
+                <div>
+
+                    <div class="mb-5 border-b border-cream-200 pb-4">
+                        <h3 class="font-display text-2xl font-bold text-navy">
+                            Información profesional
+                        </h3>
+
+                        <p class="mt-1 text-sm text-ink-600">
+                            Esta información es administrativa. Si necesitas cambiarla, contacta al administrador.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                        <div class="rounded-card bg-cream-50 px-4 py-4">
+                            <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                Especialidad
+                            </p>
+
+                            <p class="mt-1 font-semibold text-ink">
+                                {{ $barbero?->especialidad ?? 'No registrada' }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-card bg-cream-50 px-4 py-4">
+                            <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                Disponibilidad
+                            </p>
+
+                            <div class="mt-2">
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold {{ $estadoDisponibilidadClass }}">
+                                    {{ $estadoDisponibilidadTexto }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="rounded-card bg-cream-50 px-4 py-4">
+                            <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                Años de experiencia
+                            </p>
+
+                            <p class="mt-1 font-semibold text-ink">
+                                {{ $barbero?->experiencia_anos ?? 0 }} años
+                            </p>
+                        </div>
+
+                        <div class="rounded-card bg-cream-50 px-4 py-4">
+                            <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                Fecha de contratación
+                            </p>
+
+                            <p class="mt-1 font-semibold text-ink">
+                                {{ $barbero?->fecha_contratacion ?? 'No registrada' }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-card bg-cream-50 px-4 py-4 md:col-span-2">
+                            <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                                Biografía
+                            </p>
+
+                            <p class="mt-1 leading-7 text-ink-700">
+                                {{ $barbero?->biografia ?? 'Aún no tienes una biografía registrada.' }}
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
                 <!-- Cambio de contraseña -->
                 <div>
 
@@ -364,15 +544,13 @@
                 <!-- Botones -->
                 <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-cream-200 pt-6">
 
-                    <a href="{{ route('administrador.dashboard') }}"
+                    <a href="{{ route('profile.show') }}"
                        class="inline-flex items-center justify-center rounded-panel bg-cream-200 px-6 py-3 text-sm font-bold text-navy hover:bg-cream-300 transition-colors">
                         Cancelar
                     </a>
 
-                    <button
-                        type="submit"
-                        class="rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                    >
+                    <button type="submit"
+                            class="rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                         Guardar cambios
                     </button>
 

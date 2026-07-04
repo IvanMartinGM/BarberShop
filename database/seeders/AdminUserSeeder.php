@@ -20,13 +20,13 @@ class AdminUserSeeder extends Seeder
             $admin = User::updateOrCreate(
                 ['email' => 'admin@barberia.com'],
                 [
-                    'nombres' => 'ElAdministrador',
+                    'nombres' => 'Administrador',
                     'primer_apellido' => 'Principal',
                     'segundo_apellido' => 'Elbueno',
                     'password' => Hash::make('password123'),
                     'estado' => 1,
                     'nombre_usuario' => 'admin',
-                    'genero' => 'otro',
+                    'genero' => 'M',
                     'celular' => '3312765431',
                     'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                     'ultimo_acceso' => null,

@@ -5,6 +5,22 @@
 
 @section('content')
 
+@php
+$defaultProfilePhoto = 'images/default-avatar.svg';
+
+$fotoPerfil = $cliente->user?->foto_perfil;
+
+if (!$fotoPerfil) {
+$fotoPerfilUrl = asset($defaultProfilePhoto);
+} elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+$fotoPerfilUrl = $fotoPerfil;
+} elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+$fotoPerfilUrl = asset($fotoPerfil);
+} else {
+$fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+}
+@endphp
+
 <section class="max-w-5xl mx-auto">
 
     <!-- Header interno -->
@@ -39,7 +55,7 @@
     <!-- Card principal -->
     <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
-        <form method="POST" action="{{ route('cliente.update', $cliente->id) }}" class="p-6 sm:p-8 space-y-8">
+        <form method="POST" action="{{ route('cliente.update', $cliente->id) }}" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-8">
             @csrf
             @method('PUT')
 
@@ -53,6 +69,35 @@
                     <p class="mt-1 text-sm text-ink-600">
                         Datos básicos de la cuenta del cliente.
                     </p>
+                </div>
+                <!-- Foto de perfil -->
+                <div class="mb-6 rounded-panel border border-cream-200 bg-cream-50 p-4 sm:p-5">
+
+                    <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+
+                        <div class="flex justify-center sm:justify-start">
+                            <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $cliente->user?->nombres ?? 'cliente' }}" class="h-24 w-24 rounded-full object-cover bg-white p-2 ring-4 ring-white shadow-card">
+                        </div>
+
+                        <div class="flex-1">
+                            <label for="foto_perfil" class="block text-sm font-semibold text-navy mb-2">
+                                Cambiar foto de perfil
+                            </label>
+
+                            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/jpg,image/webp" class="block w-full rounded-card border border-cream-300 bg-white text-sm text-ink file:mr-4 file:border-0 file:bg-barber-red file:px-4 file:py-3 file:text-sm file:font-bold file:text-white hover:file:bg-barber-red-700 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+
+                            <p class="mt-2 text-xs text-ink-600">
+                                Formatos permitidos: JPG, JPEG, PNG o WEBP. Tamaño máximo: 2 MB.
+                                Si no seleccionas una nueva imagen, se conservará la foto actual.
+                            </p>
+
+                            @error('foto_perfil')
+                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                    </div>
+
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">

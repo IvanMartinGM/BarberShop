@@ -5,13 +5,21 @@
 
 @section('content')
 
-@php
-$fotoPerfil = $barbero->user?->foto_perfil ?? 'images/default-avatar.svg';
+             @php
+                    $defaultProfilePhoto = 'images/default-avatar.svg';
 
-$fotoPerfilUrl = str_starts_with($fotoPerfil, 'profile_photos/')
-? asset('storage/' . $fotoPerfil)
-: asset($fotoPerfil);
-@endphp
+                    $fotoPerfil = $barbero->user?->foto_perfil;
+
+                    if (!$fotoPerfil) {
+                    $fotoPerfilUrl = asset($defaultProfilePhoto);
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+                    $fotoPerfilUrl = $fotoPerfil;
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+                    $fotoPerfilUrl = asset($fotoPerfil);
+                    } else {
+                    $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+                    }
+                    @endphp
 
 <section class="max-w-5xl mx-auto">
 

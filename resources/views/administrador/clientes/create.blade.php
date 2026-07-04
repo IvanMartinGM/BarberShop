@@ -22,7 +22,7 @@
 
 
 
-        <form method="POST" action="{{ route('cliente.store') }}" class="p-6 sm:p-8 space-y-8">
+        <form method="POST" action="{{ route('cliente.store') }}" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-8">
             @csrf
 
             <!-- Información de usuario -->
@@ -34,6 +34,36 @@
                     <p class="mt-1 text-sm text-ink-600">
                         Datos básicos para crear la cuenta de acceso.
                     </p>
+                </div>
+
+                <!-- Foto de perfil -->
+                <div class="mb-6 rounded-panel border border-cream-200 bg-cream-50 p-4 sm:p-5">
+
+                    <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+
+                        <div class="flex justify-center sm:justify-start">
+                            <img src="{{ asset('images/default-avatar.svg') }}" alt="Foto de perfil por defecto" class="h-24 w-24 rounded-full object-cover bg-white p-2 ring-4 ring-white shadow-card">
+                        </div>
+
+                        <div class="flex-1">
+                            <label for="foto_perfil" class="block text-sm font-semibold text-navy mb-2">
+                                Foto de perfil
+                            </label>
+
+                            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/jpeg,image/png,image/jpg,image/webp" class="block w-full rounded-card border border-cream-300 bg-white text-sm text-ink file:mr-4 file:border-0 file:bg-barber-red file:px-4 file:py-3 file:text-sm file:font-bold file:text-white hover:file:bg-barber-red-700 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+
+                            <p class="mt-2 text-xs text-ink-600">
+                                Formatos permitidos: JPG, JPEG, PNG o WEBP. Tamaño máximo: 2 MB.
+                                Si no seleccionas una imagen, se usará la foto por defecto.
+                            </p>
+
+                            @error('foto_perfil')
+                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                    </div>
+
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -72,7 +102,7 @@
                         <label for="celular" class="block text-sm font-semibold text-navy mb-2">
                             Celular
                         </label>
-                        <input type="tel" id="celular" name="celular" value="{{ old('celular') }}" placeholder="+52 333 456 7890" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                        <input type="tel" id="celular" name="celular" value="{{ old('celular') }}" required placeholder="+52 333 456 7890" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                         @error('celular')
                         <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
@@ -114,7 +144,7 @@
                         <label for="genero" class="block text-sm font-semibold text-navy mb-2">
                             Género
                         </label>
-                        <select id="genero" name="genero" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                        <select id="genero" name="genero" required class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                             <option value="">Selecciona una opción</option>
                             <option value="M" {{ old('genero') === 'M' ? 'selected' : '' }}>Masculino</option>
                             <option value="F" {{ old('genero') === 'F' ? 'selected' : '' }}>Femenino</option>

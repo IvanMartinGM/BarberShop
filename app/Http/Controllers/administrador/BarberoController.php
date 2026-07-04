@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Barbero;
+use App\Models\Servicio;
 use App\Models\Role;
 use App\Models\Horario;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 class BarberoController extends Controller
 {
     private const DEFAULT_PROFILE_PHOTO = 'images/default-avatar.svg';
+    private const PROFILE_PHOTO_BASE_DIRECTORY = 'profile/users';
 
 
     public function create()
@@ -56,15 +58,9 @@ class BarberoController extends Controller
             ])->onlyInput('email');
         }
 
-        // Set default profile photo path
-        $profilePhotoPath = self::DEFAULT_PROFILE_PHOTO;
-
-        if ($request->hasFile('foto_perfil')) {
-            $profilePhotoPath = $request->file('foto_perfil')->store('profile_photos', 'public');
-        }
 
         // Use a transaction to ensure that the user, barber profile and role are created successfully
-        $newBarbero =  DB::transaction(function () use ($validatedData, $barberRole, $profilePhotoPath) {
+        $newBarbero =  DB::transaction(function () use ($validatedData, $barberRole, $request) {
 
             // Create a new user
             $newUser = User::create(
@@ -80,9 +76,18 @@ class BarberoController extends Controller
                     'estado' => 1,
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
-                    'foto_perfil' => $profilePhotoPath,
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                 ]
             );
+
+            if ($request->hasFile('foto_perfil')) {
+                $profilePhotoPath = $request->file('foto_perfil')
+                    ->store(self::PROFILE_PHOTO_BASE_DIRECTORY . '/' . $newUser->id, 'public');
+
+                $newUser->forceFill([
+                    'foto_perfil' => $profilePhotoPath,
+                ])->save();
+            }
 
             $newBarbero = $newUser->barbero()->create([
                 'estado_disponibilidad' => $validatedData['estado_disponibilidad'],
@@ -117,11 +122,15 @@ class BarberoController extends Controller
 
     public function show(int $id)
     {
-        //Search for the barbero with the given id and load the related user
-        $barbero = Barbero::with('user')->findOrFail($id);
+        $barbero = Barbero::with([
+            'user',
+            'horarios.diasSemana',
+        ])->find($id);
 
         if (!$barbero) {
-            return redirect()->back()->with("error", "Barbero no encontrado");
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'Barbero no encontrado.');
         }
 
         return view('administrador.barberos.show', compact('barbero'));
@@ -217,15 +226,20 @@ class BarberoController extends Controller
             }
 
             if ($request->hasFile('foto_perfil')) {
+                $fotoAnterior = $user->foto_perfil;
+
                 if (
-                    $user->foto_perfil &&
-                    str_starts_with($user->foto_perfil, 'profile_photos/') &&
-                    Storage::disk('public')->exists($user->foto_perfil)
+                    $fotoAnterior &&
+                    !str_starts_with($fotoAnterior, 'images/') &&
+                    !str_starts_with($fotoAnterior, 'http://') &&
+                    !str_starts_with($fotoAnterior, 'https://') &&
+                    Storage::disk('public')->exists($fotoAnterior)
                 ) {
-                    Storage::disk('public')->delete($user->foto_perfil);
+                    Storage::disk('public')->delete($fotoAnterior);
                 }
 
-                $userData['foto_perfil'] = $request->file('foto_perfil')->store('profile_photos', 'public');
+                $userData['foto_perfil'] = $request->file('foto_perfil')
+                    ->store(self::PROFILE_PHOTO_BASE_DIRECTORY . '/' . $user->id, 'public');
             }
 
             // Update the user
@@ -366,5 +380,62 @@ class BarberoController extends Controller
         return redirect()
             ->route('barbero.show', $barbero->id)
             ->with('status', 'Horarios asignados correctamente.');
+    }
+
+
+    public function editServicios(int $id)
+    {
+        $barbero = Barbero::with(['user', 'servicios'])->find($id);
+
+        if (!$barbero) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'Barbero no encontrado.');
+        }
+
+        if (!$barbero->user) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'El barbero no tiene un usuario asociado.');
+        }
+
+        $servicios = Servicio::where('estado', 1)
+            ->orderBy('categoria')
+            ->orderBy('nombre_servicio')
+            ->get();
+
+        return view('administrador.barberos.servicios', compact('barbero', 'servicios'));
+    }
+
+    public function updateServicios(Request $request, int $id)
+    {
+        $barbero = Barbero::with('user')->find($id);
+
+        if (!$barbero) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'Barbero no encontrado.');
+        }
+
+        if (!$barbero->user) {
+            return redirect()
+                ->route('barbero.index')
+                ->with('error', 'El barbero no tiene un usuario asociado.');
+        }
+
+        $validatedData = $request->validate([
+            'servicios' => 'nullable|array',
+            'servicios.*' => 'exists:servicios,id',
+        ]);
+
+        $servicios = $validatedData['servicios'] ?? [];
+
+        $barbero->servicios()->syncWithPivotValues($servicios, [
+            'estado' => 1,
+        ]);
+
+        return redirect()
+            ->route('barbero.show', $barbero->id)
+            ->with('status', 'Servicios del barbero actualizados correctamente.');
     }
 }

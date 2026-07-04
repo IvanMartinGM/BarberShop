@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             ClienteSeeder::class,
             BarberoSeeder::class,
             BarberoHorarioSeeder::class,
+
+            ServicioSeeder::class,
         ]);
     }
 }

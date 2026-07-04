@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 
 class ClienteSeeder extends Seeder
 {
+    private const DEFAULT_PROFILE_PHOTO = 'images/default-avatar.svg';
+
     public function run(): void
     {
         $clienteRole = Role::where('nombre', 'cliente')->first();
@@ -31,7 +33,7 @@ class ClienteSeeder extends Seeder
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
                     'genero' => 'M',
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                     'celular' => '3331112233',
                 ],
                 'cliente' => [
@@ -57,7 +59,7 @@ class ClienteSeeder extends Seeder
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
                     'genero' => 'F',
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                     'celular' => '3332223344',
                 ],
                 'cliente' => [
@@ -83,7 +85,7 @@ class ClienteSeeder extends Seeder
                     'fecha_registro' => now(),
                     'ultimo_acceso' => null,
                     'genero' => 'M',
-                    'foto_perfil' => 'images/default_profile.jpg',
+                    'foto_perfil' => self::DEFAULT_PROFILE_PHOTO,
                     'celular' => '3334445566',
                 ],
                 'cliente' => [

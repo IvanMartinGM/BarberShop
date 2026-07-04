@@ -1,24 +1,51 @@
-@extends('layouts.admin')
+@extends('layouts.barbero')
 
-@section('title', 'Detalle del cliente - BarberShop')
-@section('page-title', 'Detalle del cliente')
+@section('title', 'Mi perfil - BarberShop')
+@section('page-title', 'Mi perfil')
 
 @section('content')
 
 @php
-$defaultProfilePhoto = 'images/default-avatar.svg';
+    $defaultProfilePhoto = 'images/default-avatar.svg';
 
-$fotoPerfil = $cliente->user?->foto_perfil;
+    $fotoPerfil = $user->foto_perfil;
 
-if (!$fotoPerfil) {
-$fotoPerfilUrl = asset($defaultProfilePhoto);
-} elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
-$fotoPerfilUrl = $fotoPerfil;
-} elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
-$fotoPerfilUrl = asset($fotoPerfil);
-} else {
-$fotoPerfilUrl = asset('storage/' . $fotoPerfil);
-}
+    if (!$fotoPerfil) {
+        $profileImage = asset($defaultProfilePhoto);
+    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+        $profileImage = $fotoPerfil;
+    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+        $profileImage = asset($fotoPerfil);
+    } else {
+        $profileImage = asset('storage/' . $fotoPerfil);
+    }
+
+    $isDefaultProfilePhoto = !$fotoPerfil || $fotoPerfil === $defaultProfilePhoto;
+
+    $generoTexto = match ($user->genero) {
+        'M' => 'Masculino',
+        'F' => 'Femenino',
+        'otro' => 'Otro',
+        default => 'No registrado',
+    };
+
+    $barbero = $user->barbero;
+
+    $estadoDisponibilidad = $barbero?->estado_disponibilidad;
+
+    $estadoDisponibilidadTexto = match ($estadoDisponibilidad) {
+        'disponible' => 'Disponible',
+        'ocupado' => 'Ocupado',
+        'inactivo' => 'Inactivo',
+        default => 'No registrado',
+    };
+
+    $estadoDisponibilidadClass = match ($estadoDisponibilidad) {
+        'disponible' => 'bg-success-light text-success',
+        'ocupado' => 'bg-warning-light text-warning',
+        'inactivo' => 'bg-danger-light text-danger',
+        default => 'bg-cream-100 text-ink-500',
+    };
 @endphp
 
 <section class="space-y-6">
@@ -28,22 +55,24 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
 
         <div>
             <h2 class="font-display text-3xl font-bold text-navy">
-                Perfil del cliente
+                Mi perfil
             </h2>
 
             <p class="mt-2 text-sm text-ink-600">
-                Consulta toda la información administrativa del cliente.
+                Consulta la información de tu cuenta de barbero.
             </p>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3">
 
-            <a href="{{ route('cliente.index') }}" class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
-                Volver
+            <a href="{{ route('barbero.dashboard') }}"
+               class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
+                Volver al dashboard
             </a>
 
-            <a href="{{ route('cliente.edit', $cliente->id) }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white hover:bg-barber-red-700 transition-colors">
-                Editar cliente
+            <a href="{{ route('profile.edit') }}"
+               class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                Editar perfil
             </a>
 
         </div>
@@ -51,57 +80,74 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
     </div>
 
     <!-- Layout principal -->
-    <div class="grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)] gap-6">
+    <div class="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6">
 
         <!-- Card perfil -->
         <aside class="rounded-panel border border-cream-200 bg-white shadow-card overflow-hidden">
 
             <div class="bg-navy px-6 py-8 text-center">
 
-                <div class="mx-auto h-28 w-28 overflow-hidden rounded-full bg-white p-2 shadow-panel ring-4 ring-cream-100">
-                    <img src="{{ $fotoPerfilUrl }}" alt="Foto de perfil de {{ $cliente->user?->nombres ?? 'cliente' }}" class="h-full w-full rounded-full object-cover">
+                <div class="mx-auto h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-cream shadow-panel">
+                    <img
+                        src="{{ $profileImage }}"
+                        alt="Foto de perfil de {{ $user->nombres ?? 'barbero' }}"
+                        class="h-full w-full object-cover"
+                    >
                 </div>
 
                 <h3 class="mt-4 font-display text-2xl font-bold text-white">
-                    {{ $cliente->user?->nombres ?? 'Sin nombre' }}
-                    {{ $cliente->user?->primer_apellido ?? '' }}
+                    {{ $user->nombres ?? 'Barbero' }}
+                    {{ $user->primer_apellido ?? '' }}
                 </h3>
 
                 <p class="mt-1 text-sm text-cream-200">
-                    {{ $cliente->tipo_cliente ?? 'Cliente sin categoría' }}
+                    Cuenta de barbero
                 </p>
 
             </div>
 
             <div class="p-6 space-y-5">
 
-                <!-- Estado -->
+                <!-- Estado del usuario -->
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Estado
+                        Estado de cuenta
                     </p>
 
                     <div class="mt-2">
-                        @if ($cliente->user?->estado == 1)
-                        <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
-                            Activo
-                        </span>
+                        @if ($user->estado == 1)
+                            <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
+                                Activo
+                            </span>
                         @else
-                        <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
-                            Inactivo
-                        </span>
+                            <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
+                                Inactivo
+                            </span>
                         @endif
                     </div>
                 </div>
 
-                <!-- Tipo de cliente -->
+                <!-- Disponibilidad -->
                 <div class="border-t border-cream-200 pt-5">
                     <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Tipo de cliente
+                        Disponibilidad
+                    </p>
+
+                    <div class="mt-2">
+                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold {{ $estadoDisponibilidadClass }}">
+                            {{ $estadoDisponibilidadTexto }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Rol -->
+                <div class="border-t border-cream-200 pt-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                        Tipo de cuenta
                     </p>
 
                     <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $cliente->tipo_cliente ?? 'No registrado' }}
+                        Barbero
                     </p>
                 </div>
 
@@ -111,19 +157,8 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                         Correo electrónico
                     </p>
 
-                    <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $cliente->user?->email ?? 'No registrado' }}
-                    </p>
-                </div>
-
-                <!-- Celular -->
-                <div class="border-t border-cream-200 pt-5">
-                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Celular
-                    </p>
-
-                    <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $cliente->user?->celular ?? 'No registrado' }}
+                    <p class="mt-1 break-words text-sm font-medium text-ink">
+                        {{ $user->email ?? 'No registrado' }}
                     </p>
                 </div>
 
@@ -134,7 +169,18 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                     </p>
 
                     <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $cliente->user?->nombre_usuario ?? 'No registrado' }}
+                        {{ $user->nombre_usuario ?? 'No registrado' }}
+                    </p>
+                </div>
+
+                <!-- Celular -->
+                <div class="border-t border-cream-200 pt-5">
+                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                        Celular
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-ink">
+                        {{ $user->celular ?? 'No registrado' }}
                     </p>
                 </div>
 
@@ -154,7 +200,7 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                     </h3>
 
                     <p class="mt-1 text-sm text-ink-500">
-                        Identificadores internos y datos administrativos.
+                        Datos internos y administrativos de tu usuario.
                     </p>
                 </div>
 
@@ -162,21 +208,21 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            ID cliente
+                            ID usuario
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->id }}
+                            {{ $user->id }}
                         </p>
                     </div>
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            ID usuario asociado
+                            ID barbero
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->id_usuario ?? 'No registrado' }}
+                            {{ $barbero?->id ?? 'No registrado' }}
                         </p>
                     </div>
 
@@ -186,17 +232,17 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->fecha_registro ?? 'No registrada' }}
+                            {{ $user->fecha_registro ?? 'No registrada' }}
                         </p>
                     </div>
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Último acceso
+                            Foto de perfil
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->ultimo_acceso ?? 'Sin acceso registrado' }}
+                            {{ $isDefaultProfilePhoto ? 'Imagen default' : 'Personalizada' }}
                         </p>
                     </div>
 
@@ -213,7 +259,7 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                     </h3>
 
                     <p class="mt-1 text-sm text-ink-500">
-                        Datos generales del usuario asociado al cliente.
+                        Datos generales asociados a tu cuenta.
                     </p>
                 </div>
 
@@ -225,7 +271,7 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->nombres ?? 'No registrado' }}
+                            {{ $user->nombres ?? 'No registrado' }}
                         </p>
                     </div>
 
@@ -235,7 +281,7 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->primer_apellido ?? 'No registrado' }}
+                            {{ $user->primer_apellido ?? 'No registrado' }}
                         </p>
                     </div>
 
@@ -245,7 +291,7 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->user?->segundo_apellido ?? 'No registrado' }}
+                            {{ $user->segundo_apellido ?? 'No registrado' }}
                         </p>
                     </div>
 
@@ -254,102 +300,77 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
                             Género
                         </p>
 
-                        @php
-                        $genero = $cliente->user?->genero;
-                        @endphp
-
                         <p class="mt-1 font-semibold text-ink">
-                            @if (!$genero)
-                            No registrado
-                            @elseif ($genero === 'M')
-                            Masculino
-                            @elseif ($genero === 'F')
-                            Femenino
-                            @else
-                            Otro
-                            @endif
+                            {{ $generoTexto }}
                         </p>
                     </div>
+
                 </div>
 
             </div>
 
-            <!-- Información del cliente -->
+            <!-- Información profesional -->
             <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
                 <div class="border-b border-cream-200 px-6 py-5">
                     <h3 class="font-display text-xl font-bold text-navy">
-                        Información del cliente
+                        Información profesional
                     </h3>
 
                     <p class="mt-1 text-sm text-ink-500">
-                        Datos propios del perfil de cliente.
+                        Datos laborales asociados a tu perfil de barbero.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-6">
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Fecha de nacimiento
+                            Especialidad
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->fecha_nacimiento ?? 'No registrada' }}
+                            {{ $barbero?->especialidad ?? 'No registrada' }}
                         </p>
                     </div>
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Última visita
+                            Años de experiencia
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->ultima_visita ?? 'Sin visitas registradas' }}
+                            {{ $barbero?->experiencia_anos ?? 0 }} años
                         </p>
                     </div>
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Puntos fidelidad
+                            Fecha de contratación
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->puntos_fidelidad ?? 0 }} puntos
+                            {{ $barbero?->fecha_contratacion ?? 'No registrada' }}
                         </p>
                     </div>
 
                     <div class="rounded-card bg-cream-50 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Acepta notificaciones
+                            Calificación promedio
                         </p>
 
                         <p class="mt-1 font-semibold text-ink">
-                            @if ($cliente->acepta_notificaciones == 1)
-                            Sí
-                            @else
-                            No
-                            @endif
+                            {{ $barbero?->calificacion_promedio ?? 'Sin calificación' }}
                         </p>
                     </div>
 
-                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                    <div class="rounded-card bg-cream-50 px-4 py-4 md:col-span-2">
                         <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Total visitas
+                            Biografía
                         </p>
 
-                        <p class="mt-1 font-semibold text-ink">
-                            {{ $cliente->total_visitas ?? 0 }}
-                        </p>
-                    </div>
-
-                    <div class="rounded-card bg-cream-50 px-4 py-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                            Total gastado
-                        </p>
-
-                        <p class="mt-1 font-semibold text-ink">
-                            ${{ number_format((float) ($cliente->total_gastado ?? 0), 2) }}
+                        <p class="mt-1 leading-7 text-ink-700">
+                            {{ $barbero?->biografia ?? 'Aún no tienes una biografía registrada.' }}
                         </p>
                     </div>
 
@@ -357,23 +378,81 @@ $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
 
             </div>
 
-            <!-- Notas generales -->
+            <!-- Información de acceso -->
             <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
                 <div class="border-b border-cream-200 px-6 py-5">
                     <h3 class="font-display text-xl font-bold text-navy">
-                        Notas generales
+                        Información de acceso
                     </h3>
 
                     <p class="mt-1 text-sm text-ink-500">
-                        Notas internas o información adicional del cliente.
+                        Datos que utilizas para identificarte e iniciar sesión.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-6">
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Correo electrónico
+                        </p>
+
+                        <p class="mt-1 break-words font-semibold text-ink">
+                            {{ $user->email ?? 'No registrado' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Nombre de usuario
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $user->nombre_usuario ?? 'No registrado' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-card bg-cream-50 px-4 py-4 md:col-span-2">
+                        <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                            Celular
+                        </p>
+
+                        <p class="mt-1 font-semibold text-ink">
+                            {{ $user->celular ?? 'No registrado' }}
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Seguridad -->
+            <div class="rounded-panel border border-cream-200 bg-white shadow-card">
+
+                <div class="border-b border-cream-200 px-6 py-5">
+                    <h3 class="font-display text-xl font-bold text-navy">
+                        Seguridad de la cuenta
+                    </h3>
+
+                    <p class="mt-1 text-sm text-ink-500">
+                        Información general sobre la protección de tu acceso.
                     </p>
                 </div>
 
                 <div class="p-6">
-                    <p class="leading-7 text-ink-700">
-                        {{ $cliente->notas_generales ?? 'Este cliente aún no tiene notas generales registradas.' }}
-                    </p>
+
+                    <div class="rounded-card border border-warning bg-warning-light px-5 py-4">
+                        <p class="text-sm font-bold text-warning">
+                            Contraseña protegida
+                        </p>
+
+                        <p class="mt-1 text-sm leading-6 text-ink-700">
+                            Por seguridad, tu contraseña no se muestra en esta pantalla.
+                            Puedes cambiarla desde la edición de tu perfil.
+                        </p>
+                    </div>
+
                 </div>
 
             </div>

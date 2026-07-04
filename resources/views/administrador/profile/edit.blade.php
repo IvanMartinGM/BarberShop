@@ -156,14 +156,14 @@ $profileImage = asset('storage/' . $fotoPerfil);
                                 Nueva foto de perfil
                             </label>
 
-                            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml" class="w-full rounded-card border border-cream-300 bg-white px-4 py-3 text-sm text-ink file:mr-4 file:rounded-card file:border-0 file:bg-barber-red file:px-4 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-barber-red-700 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/png,image/jpeg,image/jpg,image/webp" class="w-full rounded-card border border-cream-300 bg-white px-4 py-3 text-sm text-ink file:mr-4 file:rounded-card file:border-0 file:bg-barber-red file:px-4 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-barber-red-700 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                             @error('foto_perfil')
                             <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                             @enderror
 
                             <p class="mt-2 text-xs text-ink-500">
-                                Formatos permitidos: JPG, JPEG, PNG, WEBP o SVG. Tamaño máximo: 2 MB.
+                                Formatos permitidos: JPG, JPEG, PNG o WEBP. Tamaño máximo: 2 MB.
                             </p>
                         </div>
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('razor-electric.svg') }}">
 
     @vite('resources/css/app.css')
 
@@ -23,12 +24,14 @@
             <!-- Brand -->
             <div class="flex h-16 md:h-20 items-center justify-center md:justify-start px-3 md:px-6 border-b border-white/10">
 
-                <a href="{{ url('/dashboard') }}" class="flex items-center gap-3 min-w-0">
+                <a href="{{ route('administrador.dashboard') }}" class="flex items-center gap-3 min-w-0">
 
                     <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-panel bg-barber-red text-white shadow-card">
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 7.5 3 3m13.5 4.5L21 3M8.5 15.5 3 21m12.5-5.5L21 21M9 9l6 6m0-6-6 6" />
-                        </svg>
+                        <img
+                            src="{{ asset('razor-electric.svg') }}"
+                            alt="BarberShop"
+                            class="h-6 w-6"
+                        >
                     </div>
 
                     <div class="hidden md:block min-w-0">
@@ -48,7 +51,7 @@
             <nav class="flex-1 space-y-2 px-3 md:px-4 py-4 md:py-6">
 
                 <!-- Dashboard -->
-                <a href="{{ url('/dashboard') }}" title="Dashboard" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+                <a href="{{ route('administrador.dashboard') }}" title="Dashboard" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
                    {{ request()->is('dashboard') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
                     <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,63 +84,63 @@
                 </a>
 
                 <!-- Horarios -->
-                    <a href="{{ route('horario.index') }}" class="flex items-center gap-3 rounded-panel px-4 py-3 text-sm font-bold transition-colors
+                <a href="{{ route('horario.index') }}" class="flex items-center gap-3 rounded-panel px-4 py-3 text-sm font-bold transition-colors
                     {{ request()->routeIs('horario.*')
                     ? 'bg-barber-red text-white'
                      : 'text-cream-100 hover:bg-white/10 hover:text-white' }}">
 
-                        <span class="inline-flex h-6 w-6 items-center justify-center">
-                            🕒
-                        </span>
+                    <span class="inline-flex h-6 w-6 items-center justify-center">
+                        🕒
+                    </span>
 
-                        <span class="hidden md:inline">
-                            Horarios
-                        </span>
-                    </a>
+                    <span class="hidden md:inline">
+                        Horarios
+                    </span>
+                </a>
 
-                    <!-- Citas -->
-                    <a href="{{ url('/citas') }}" title="Citas" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+                <!-- Citas -->
+                <a href="{{ url('/citas') }}" title="Citas" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
                    {{ request()->is('citas*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
-                        <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
-                        </svg>
+                    <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+                    </svg>
 
-                        <span class="hidden md:inline">Citas</span>
-                    </a>
+                    <span class="hidden md:inline">Citas</span>
+                </a>
 
-                    <!-- Servicios -->
-                    <a href="{{ route('servicio.index') }}" title="Servicios" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+                <!-- Servicios -->
+                <a href="{{ route('servicio.index') }}" title="Servicios" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
                    {{ request()->is('servicios*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
-                        <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16" />
-                        </svg>
+                    <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16" />
+                    </svg>
 
-                        <span class="hidden md:inline">Servicios</span>
-                    </a>
+                    <span class="hidden md:inline">Servicios</span>
+                </a>
 
-                    <!-- Pagos -->
-                    <a href="{{ url('/pagos') }}" title="Pagos" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+                <!-- Pagos -->
+                <a href="{{ url('/pagos') }}" title="Pagos" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
                    {{ request()->is('pagos*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
-                        <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 10h18M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z" />
-                        </svg>
+                    <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 10h18M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z" />
+                    </svg>
 
-                        <span class="hidden md:inline">Pagos</span>
-                    </a>
+                    <span class="hidden md:inline">Pagos</span>
+                </a>
 
-                    <!-- Reportes -->
-                    <a href="{{ url('/reportes') }}" title="Reportes" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+                <!-- Reportes -->
+                <a href="{{ url('/reportes') }}" title="Reportes" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
                    {{ request()->is('reportes*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
-                        <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5m5 14v-8m5 8V9m5 10V3" />
-                        </svg>
+                    <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5m5 14v-8m5 8V9m5 10V3" />
+                    </svg>
 
-                        <span class="hidden md:inline">Reportes</span>
-                    </a>
+                    <span class="hidden md:inline">Reportes</span>
+                </a>
 
             </nav>
 
@@ -200,11 +203,19 @@
                     @php
                     $authUser = auth()->user();
 
-                    $adminFotoPerfil = $authUser?->foto_perfil ?? 'images/default-avatar.svg';
+                    $defaultProfilePhoto = 'images/default-avatar.svg';
 
-                    $adminFotoPerfilUrl = str_starts_with($adminFotoPerfil, 'profile_photos/')
-                    ? asset('storage/' . $adminFotoPerfil)
-                    : asset($adminFotoPerfil);
+                    $fotoPerfil = $authUser?->foto_perfil;
+
+                    if (!$fotoPerfil) {
+                    $adminFotoPerfilUrl = asset($defaultProfilePhoto);
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+                    $adminFotoPerfilUrl = $fotoPerfil;
+                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+                    $adminFotoPerfilUrl = asset($fotoPerfil);
+                    } else {
+                    $adminFotoPerfilUrl = asset('storage/' . $fotoPerfil);
+                    }
                     @endphp
 
                     <!-- Admin Profile -->
@@ -220,7 +231,10 @@
                         </div>
 
                         <div class="h-10 w-10 overflow-hidden rounded-full bg-white p-1 shadow-card ring-2 ring-cream-200">
-                            <img src="{{ $adminFotoPerfilUrl }}" alt="Foto de perfil de {{ $authUser?->nombres ?? 'Administrador' }}" class="h-full w-full rounded-full object-cover">
+                            <img src="{{ $adminFotoPerfilUrl }}" 
+                            alt="Foto de perfil de {{ $authUser?->nombres ?? 'Administrador' }}" 
+                            class="h-full w-full rounded-full object-cover"
+                            >
                         </div>
                     </a>
 
