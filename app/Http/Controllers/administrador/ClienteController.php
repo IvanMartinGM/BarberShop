@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ClienteController extends Controller
 {
@@ -257,10 +258,25 @@ class ClienteController extends Controller
 
         $cliente->user->forceFill([
             'estado' => 0,
+            'fecha_baja' => now(),
         ])->save();
 
         return redirect()
             ->route('cliente.index')
             ->with('status', 'Cliente eliminado correctamente.');
+    }
+
+    public function pdf()
+    {
+        $clientes = Cliente::with('user')
+            ->orderBy('id')
+            ->get();
+
+        $fechaGeneracion = now()->format('d/m/Y H:i:s');
+
+        $pdf = Pdf::loadView('administrador.clientes.pdf', compact('clientes', 'fechaGeneracion'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('reporte-clientes.pdf');
     }
 }

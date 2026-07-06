@@ -20,9 +20,16 @@
             </p>
         </div>
 
-        <a href="{{ route('barbero.create') }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
-            Agregar barbero
-        </a>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a href="{{ route('reportes.barberos.pdf') }}" target="_blank" class="inline-flex items-center justify-center rounded-panel bg-navy px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-navy-800 focus:outline-none focus:ring-4 focus:ring-navy-100 transition-colors">
+                Generar PDF
+            </a>
+
+            <a href="{{ route('barbero.create') }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                Agregar barbero
+            </a>
+        </div>
+
     </div>
     <!-- Stats rápidas -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -245,21 +252,21 @@
 
             @forelse ($barberos as $barbero)
 
-             @php
-                    $defaultProfilePhoto = 'images/default-avatar.svg';
+            @php
+            $defaultProfilePhoto = 'images/default-avatar.svg';
 
-                    $fotoPerfil = $barbero->user?->foto_perfil;
+            $fotoPerfil = $barbero->user?->foto_perfil;
 
-                    if (!$fotoPerfil) {
-                    $fotoPerfilUrl = asset($defaultProfilePhoto);
-                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
-                    $fotoPerfilUrl = $fotoPerfil;
-                    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
-                    $fotoPerfilUrl = asset($fotoPerfil);
-                    } else {
-                    $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
-                    }
-                    @endphp
+            if (!$fotoPerfil) {
+            $fotoPerfilUrl = asset($defaultProfilePhoto);
+            } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+            $fotoPerfilUrl = $fotoPerfil;
+            } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+            $fotoPerfilUrl = asset($fotoPerfil);
+            } else {
+            $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+            }
+            @endphp
 
             <!-- Barbero -->
             <article class="p-5">

@@ -25,7 +25,11 @@ return new class extends Migration
             $table->enum('genero', ['M', 'F', 'otro'])->nullable();
             $table->string('foto_perfil', 255)->nullable();
             $table->string('celular', 20)->nullable();
+
+            $table->timestamps();
+            $table->timestamp('fecha_baja')->nullable();
         });
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -52,5 +56,3 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
-
-

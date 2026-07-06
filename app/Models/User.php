@@ -12,13 +12,12 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\CustomResetPasswordNotification;
 
 class User extends Authenticatable
 {
 
     protected $table = 'usuarios';
-
-    public $timestamps = false;
 
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -41,6 +40,7 @@ class User extends Authenticatable
         'genero',
         'foto_perfil',
         'celular',
+        'fecha_baja',
     ];
 
 
@@ -51,6 +51,7 @@ class User extends Authenticatable
             'estado' => 'boolean',
             'fecha_registro' => 'datetime',
             'ultimo_acceso' => 'datetime',
+            'fecha_baja' => 'datetime',
         ];
     }
 
@@ -58,6 +59,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password'
     ];
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new CustomResetPasswordNotification($token));
+    }
 
 
     public function roles(): BelongsToMany
@@ -103,11 +109,10 @@ class User extends Authenticatable
     public function hasActiveRoles(): bool
     {
         return $this->roles()->wherePivot('estado', 1)->exists();
-
-    } 
+    }
 
     /*A function to check if the user has any of the specified roles return 
-    true if the user has any of the roles, otherwise return false */ 
+    true if the user has any of the roles, otherwise return false */
     public function hasAnyRole(array $roles): bool
     {
         return $this->roles()->whereIn('nombre', $roles)

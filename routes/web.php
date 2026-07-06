@@ -10,7 +10,9 @@ use App\Http\Controllers\administrador\HorarioController as AdministradorHorario
 use App\Http\Controllers\administrador\ServicioController as AdministradorServicioController;
 use App\Http\Controllers\barbero\HorarioController as BarberoHorarioController;
 use App\Http\Controllers\barbero\ServicioController as BarberoServicioController;
-
+use App\Http\Controllers\administrador\AssetController as AdministradorAssetController;
+use App\Models\Asset;
+use App\Http\Controllers\auth\PasswordResetController;
 /* 
 
 Public Routes without authentication
@@ -27,7 +29,12 @@ Route::get('/servicios', function () {
 
 
 Route::get('/', function () {
-    return view('home');
+    $carouselImages = Asset::where('tipo', 'image')
+        ->latest()
+        ->take(4)
+        ->get();
+
+    return view('home', compact('carouselImages'));
 })->name('home');
 
 
@@ -58,6 +65,16 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [ClienteController::class, 'create'])->name('register.create');
     // The route to store the new cliente in the database
     Route::post('/register', [ClienteController::class, 'store'])->name('register.store');
+
+
+
+    Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPasswordForm'])->name('password.request');
+
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
+
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 });
 
 /*
@@ -194,6 +211,23 @@ Route::middleware(['auth', 'role:administrador'])
         Route::get('/servicios/{id}/edit', [AdministradorServicioController::class, 'edit'])->name('servicio.edit');
         Route::put('/servicios/{id}', [AdministradorServicioController::class, 'update'])->name('servicio.update');
         Route::delete('/servicios/{id}', [AdministradorServicioController::class, 'destroy'])->name('servicio.destroy');
+
+
+
+        /* Routes for create reportes */
+
+        Route::get('/reportes/clientes/pdf', [AdministradorClienteController::class, 'pdf'])->name('reportes.clientes.pdf');
+        Route::get('/reportes/barberos/pdf', [AdministradorBarberoController::class, 'pdf'])->name('reportes.barberos.pdf');
+
+
+        // Routes for landing assets
+        Route::get('/assets/create', [AdministradorAssetController::class, 'create'])->name('asset.create');
+
+        Route::post('/assets', [AdministradorAssetController::class, 'store'])->name('asset.store');
+
+        Route::get('/assets/images', [AdministradorAssetController::class, 'getImage'])->name('asset.images');
+
+        Route::get('/assets/videos', [AdministradorAssetController::class, 'getVideo'])->name('asset.videos');
     });
 
 

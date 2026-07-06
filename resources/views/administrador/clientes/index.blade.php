@@ -20,9 +20,15 @@
             </p>
         </div>
 
-        <a href="{{ route('cliente.create') }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
-            Agregar cliente
-        </a>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a href="{{ route('reportes.clientes.pdf') }}" target="_blank" class="inline-flex items-center justify-center rounded-panel bg-navy px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-navy-800 focus:outline-none focus:ring-4 focus:ring-navy-100 transition-colors">
+                Generar PDF
+            </a>
+
+            <a href="{{ route('cliente.create') }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                Agregar cliente
+            </a>
+        </div>
 
     </div>
 

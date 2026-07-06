@@ -27,11 +27,7 @@
                 <a href="{{ route('administrador.dashboard') }}" class="flex items-center gap-3 min-w-0">
 
                     <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-panel bg-barber-red text-white shadow-card">
-                        <img
-                            src="{{ asset('razor-electric.svg') }}"
-                            alt="BarberShop"
-                            class="h-6 w-6"
-                        >
+                        <img src="{{ asset('razor-electric.svg') }}" alt="BarberShop" class="h-6 w-6">
                     </div>
 
                     <div class="hidden md:block min-w-0">
@@ -142,6 +138,17 @@
                     <span class="hidden md:inline">Reportes</span>
                 </a>
 
+                <!-- Assets -->
+                <a href="{{ route('asset.create') }}" title="Assets" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+   {{ request()->routeIs('asset.*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
+
+                    <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2 1.586-1.586a2 2 0 0 1 2.828 0L20 14m-16 6h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Zm4-12h.01" />
+                    </svg>
+
+                    <span class="hidden md:inline">Assets</span>
+                </a>
+
             </nav>
 
             <!-- Bottom Navigation -->
@@ -231,10 +238,7 @@
                         </div>
 
                         <div class="h-10 w-10 overflow-hidden rounded-full bg-white p-1 shadow-card ring-2 ring-cream-200">
-                            <img src="{{ $adminFotoPerfilUrl }}" 
-                            alt="Foto de perfil de {{ $authUser?->nombres ?? 'Administrador' }}" 
-                            class="h-full w-full rounded-full object-cover"
-                            >
+                            <img src="{{ $adminFotoPerfilUrl }}" alt="Foto de perfil de {{ $authUser?->nombres ?? 'Administrador' }}" class="h-full w-full rounded-full object-cover">
                         </div>
                     </a>
 

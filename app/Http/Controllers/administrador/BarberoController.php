@@ -13,6 +13,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class BarberoController extends Controller
@@ -48,7 +50,6 @@ class BarberoController extends Controller
             'experiencia_anos' => 'required|integer|min:0',
 
         ]);
-
         //search for the role with the name 'barbero' to assign it to the new user
         $barberRole = Role::where('nombre', 'barbero')->first();
 
@@ -57,8 +58,6 @@ class BarberoController extends Controller
                 'role' => 'Error con el sistema. Por favor, contacte al administrador del sistema.',
             ])->onlyInput('email');
         }
-
-
         // Use a transaction to ensure that the user, barber profile and role are created successfully
         $newBarbero =  DB::transaction(function () use ($validatedData, $barberRole, $request) {
 
@@ -299,10 +298,17 @@ class BarberoController extends Controller
                 'estado_disponibilidad' => 'inactivo',
             ])->save();
 
+            // Desactivar el usuario en la tabla usuarios
+            $barbero->user->forceFill([
+                'estado' => 0,
+                'fecha_baja' => now(),
+            ])->save();
+
             // Desactivar el rol de barbero en la tabla pivote
             $user->roles()->updateExistingPivot($barberRole->id, [
                 'estado' => 0,
             ]);
+
 
             // Verificar si el usuario tiene otros roles activos, por ejemplo administrador
             $hasOtherActiveRoles = $user->roles()
@@ -437,5 +443,20 @@ class BarberoController extends Controller
         return redirect()
             ->route('barbero.show', $barbero->id)
             ->with('status', 'Servicios del barbero actualizados correctamente.');
+    }
+
+
+    public function pdf()
+    {
+        $barberos = Barbero::with('user')
+            ->orderBy('id')
+            ->get();
+
+        $fechaGeneracion = now()->format('d/m/Y H:i:s');
+
+        $pdf = Pdf::loadView('administrador.barberos.pdf', compact('barberos', 'fechaGeneracion'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('reporte-barberos.pdf');
     }
 }
