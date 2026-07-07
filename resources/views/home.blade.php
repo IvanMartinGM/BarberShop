@@ -23,13 +23,16 @@
                 <h1 class="font-display text-5xl md:text-6xl font-bold mb-6">
                     Barbería de Calidad
                 </h1>
+
                 <p class="text-lg text-cream-100 mb-8">
                     Experimenta un servicio profesional de cortes y afeitados con los mejores barberos de la ciudad.
                 </p>
+
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="/servicios" class="inline-block bg-barber-red hover:bg-barber-red-600 text-white font-bold py-3 px-8 rounded-lg transition-colors text-center">
                         Ver Servicios
                     </a>
+
                     <a href="#contacto" class="inline-block bg-white hover:bg-cream-100 text-navy font-bold py-3 px-8 rounded-lg transition-colors text-center">
                         Contactar
                     </a>
@@ -53,6 +56,7 @@
 <!-- ==================================================
          CARRUSEL
          ================================================== -->
+
 <section class="py-20 bg-white">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
@@ -69,7 +73,7 @@
 
         @if ($carouselImages->count() >= 4)
 
-            <div 
+            <div
                 x-data="{
                     activeSlide: 0,
                     totalSlides: {{ $carouselImages->count() }},
@@ -87,13 +91,14 @@
                 <div class="relative h-[320px] sm:h-[420px] md:h-[500px]">
 
                     @foreach ($carouselImages as $index => $image)
-                        <div 
+
+                        <div
                             x-show="activeSlide === {{ $index }}"
                             x-transition.opacity.duration.500ms
                             class="absolute inset-0"
                         >
-                            <img 
-                                src="{{ $image->url }}" 
+                            <img
+                                src="{{ $image->url }}"
                                 alt="{{ $image->titulo ?? $image->original_name }}"
                                 class="h-full w-full object-cover"
                             >
@@ -114,11 +119,12 @@
                                 </p>
                             </div>
                         </div>
+
                     @endforeach
 
                 </div>
 
-                <button 
+                <button
                     type="button"
                     x-on:click="prev()"
                     class="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-navy shadow-card hover:bg-white focus:outline-none focus:ring-4 focus:ring-navy-100 transition-colors"
@@ -126,7 +132,7 @@
                     ‹
                 </button>
 
-                <button 
+                <button
                     type="button"
                     x-on:click="next()"
                     class="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-navy shadow-card hover:bg-white focus:outline-none focus:ring-4 focus:ring-navy-100 transition-colors"
@@ -136,7 +142,7 @@
 
                 <div class="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
                     @foreach ($carouselImages as $index => $image)
-                        <button 
+                        <button
                             type="button"
                             x-on:click="activeSlide = {{ $index }}"
                             class="h-2.5 rounded-full transition-all"
@@ -152,9 +158,11 @@
             <div class="bg-linear-to-r from-cream via-cream-100 to-cream border-2 border-dashed border-cream-300 rounded-panel h-96 flex items-center justify-center">
                 <div class="text-center">
                     <span class="text-6xl block mb-4">🖼️</span>
+
                     <p class="text-ink-500 font-semibold">
                         Necesitas subir al menos 4 imágenes para mostrar el carrusel.
                     </p>
+
                     <p class="text-ink-400 text-sm mt-2">
                         Sube imágenes desde el módulo de Assets del panel administrativo.
                     </p>
@@ -166,7 +174,6 @@
     </div>
 
 </section>
-
 
 <!-- ==================================================
          NUESTRO PERSONAL
@@ -180,67 +187,73 @@
             <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">
                 Nuestro Personal
             </h2>
+
             <p class="text-lg text-cream-100">
                 Conoce a los profesionales detrás de cada corte perfecto
             </p>
         </div>
 
-        <!-- Grid de personal - Por implementar con PHP -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            <!-- Barbero 1 - Placeholder -->
-            <div class="bg-cream rounded-lg overflow-hidden shadow-panel hover:shadow-elevated transition-shadow">
-                <div class="bg-linear-to-b from-barber-red-100 to-cream h-56 flex items-center justify-center">
-                    <span class="text-8xl">👨‍💼</span>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="font-display text-xl font-bold text-navy mb-2">
-                        Nombre Barbero
-                    </h3>
-                    <p class="text-ink-600 text-sm mb-4">
-                        Especialidad
-                    </p>
-                    <p class="text-ink-500 text-sm">
-                        "Descripción breve sobre experiencia y especialidades"
-                    </p>
-                </div>
-            </div>
+            @forelse ($barberosDisponibles as $barbero)
 
-            <!-- Barbero 2 - Placeholder -->
-            <div class="bg-cream rounded-lg overflow-hidden shadow-panel hover:shadow-elevated transition-shadow">
-                <div class="bg-linear-to-b from-barber-red-100 to-cream h-56 flex items-center justify-center">
-                    <span class="text-8xl">👨‍💼</span>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="font-display text-xl font-bold text-navy mb-2">
-                        Nombre Barbero
-                    </h3>
-                    <p class="text-ink-600 text-sm mb-4">
-                        Especialidad
-                    </p>
-                    <p class="text-ink-500 text-sm">
-                        "Descripción breve sobre experiencia y especialidades"
-                    </p>
-                </div>
-            </div>
+                @php
+                    $fotoPerfil = $barbero->user?->foto_perfil;
 
-            <!-- Barbero 3 - Placeholder -->
-            <div class="bg-cream rounded-lg overflow-hidden shadow-panel hover:shadow-elevated transition-shadow">
-                <div class="bg-linear-to-b from-barber-red-100 to-cream h-56 flex items-center justify-center">
-                    <span class="text-8xl">👨‍💼</span>
+                    if (!$fotoPerfil || str_contains($fotoPerfil, 'default_profile')) {
+                        $fotoPerfilUrl = asset('images/default-avatar.svg');
+                    } elseif (str_starts_with($fotoPerfil, 'http://') || str_starts_with($fotoPerfil, 'https://')) {
+                        $fotoPerfilUrl = $fotoPerfil;
+                    } elseif (str_starts_with($fotoPerfil, 'profile_photos/')) {
+                        $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+                    } elseif (str_starts_with($fotoPerfil, 'images/')) {
+                        $fotoPerfilUrl = asset($fotoPerfil);
+                    } else {
+                        $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+                    }
+                @endphp
+
+                <div class="bg-cream rounded-lg overflow-hidden shadow-panel hover:shadow-elevated transition-shadow">
+
+                    <div class="bg-linear-to-b from-barber-red-100 to-cream h-64 flex items-center justify-center p-6">
+                        <img
+                            src="{{ $fotoPerfilUrl }}"
+                            alt="Foto de {{ $barbero->user?->nombres ?? 'barbero' }}"
+                            class="h-44 w-44 rounded-full object-cover bg-white p-2 shadow-card ring-4 ring-white"
+                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.svg') }}';"
+                        >
+                    </div>
+
+                    <div class="p-6 text-center">
+                        <h3 class="font-display text-xl font-bold text-navy mb-2">
+                            {{ $barbero->user?->nombres ?? 'Nombre no registrado' }}
+                            {{ $barbero->user?->primer_apellido ?? '' }}
+                        </h3>
+
+                        <p class="text-ink-600 text-sm font-semibold mb-4">
+                            {{ $barbero->especialidad ?? 'Barbero profesional' }}
+                        </p>
+
+                        <p class="text-ink-500 text-sm">
+                            {{ $barbero->biografia ?? 'Profesional especializado en cortes, estilo y atención personalizada.' }}
+                        </p>
+                    </div>
+
                 </div>
-                <div class="p-6 text-center">
-                    <h3 class="font-display text-xl font-bold text-navy mb-2">
-                        Nombre Barbero
-                    </h3>
-                    <p class="text-ink-600 text-sm mb-4">
-                        Especialidad
+
+            @empty
+
+                <div class="sm:col-span-2 lg:col-span-3 rounded-panel border border-cream-200 bg-cream p-8 text-center">
+                    <p class="font-display text-2xl font-bold text-navy">
+                        Aún no hay barberos disponibles
                     </p>
-                    <p class="text-ink-500 text-sm">
-                        "Descripción breve sobre experiencia y especialidades"
+
+                    <p class="mt-2 text-sm text-ink-600">
+                        Pronto podrás conocer a nuestro personal.
                     </p>
                 </div>
-            </div>
+
+            @endforelse
 
         </div>
 
@@ -262,24 +275,42 @@
                 <div class="bg-barber-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl">⭐</span>
                 </div>
-                <h3 class="font-display text-xl font-bold mb-2">Profesionales</h3>
-                <p class="text-cream-100">Barberos certificados con años de experiencia</p>
+
+                <h3 class="font-display text-xl font-bold mb-2">
+                    Profesionales
+                </h3>
+
+                <p class="text-cream-100">
+                    Barberos certificados con años de experiencia
+                </p>
             </div>
 
             <div class="text-center">
                 <div class="bg-barber-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl">🏆</span>
                 </div>
-                <h3 class="font-display text-xl font-bold mb-2">Calidad Premium</h3>
-                <p class="text-cream-100">Productos y técnicas de la más alta calidad</p>
+
+                <h3 class="font-display text-xl font-bold mb-2">
+                    Calidad Premium
+                </h3>
+
+                <p class="text-cream-100">
+                    Productos y técnicas de la más alta calidad
+                </p>
             </div>
 
             <div class="text-center">
                 <div class="bg-barber-red rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl">😊</span>
                 </div>
-                <h3 class="font-display text-xl font-bold mb-2">Satisfacción</h3>
-                <p class="text-cream-100">Garantía de satisfacción en cada servicio</p>
+
+                <h3 class="font-display text-xl font-bold mb-2">
+                    Satisfacción
+                </h3>
+
+                <p class="text-cream-100">
+                    Garantía de satisfacción en cada servicio
+                </p>
             </div>
 
         </div>
@@ -300,6 +331,7 @@
             <h2 class="font-display text-4xl md:text-5xl font-bold text-navy mb-4">
                 Contáctanos
             </h2>
+
             <p class="text-lg text-ink-500">
                 Estamos aquí para ayudarte y responder tus preguntas
             </p>
@@ -309,20 +341,38 @@
 
             <div class="bg-cream rounded-lg p-8 text-center border border-cream-200">
                 <div class="text-4xl mb-4">📍</div>
-                <h3 class="font-bold text-lg text-navy mb-2">Ubicación</h3>
-                <p class="text-ink-600">Calle Principal, 123<br>28001 Madrid, España</p>
+
+                <h3 class="font-bold text-lg text-navy mb-2">
+                    Ubicación
+                </h3>
+
+                <p class="text-ink-600">
+                    Calle Principal, 123<br>28001 Madrid, España
+                </p>
             </div>
 
             <div class="bg-cream rounded-lg p-8 text-center border border-cream-200">
                 <div class="text-4xl mb-4">📞</div>
-                <h3 class="font-bold text-lg text-navy mb-2">Teléfono</h3>
-                <p class="text-ink-600">+34 123 456 789<br>+34 987 654 321</p>
+
+                <h3 class="font-bold text-lg text-navy mb-2">
+                    Teléfono
+                </h3>
+
+                <p class="text-ink-600">
+                    +34 123 456 789<br>+34 987 654 321
+                </p>
             </div>
 
             <div class="bg-cream rounded-lg p-8 text-center border border-cream-200">
                 <div class="text-4xl mb-4">📧</div>
-                <h3 class="font-bold text-lg text-navy mb-2">Email</h3>
-                <p class="text-ink-600">info@barbershop.es<br>soporte@barbershop.es</p>
+
+                <h3 class="font-bold text-lg text-navy mb-2">
+                    Email
+                </h3>
+
+                <p class="text-ink-600">
+                    info@barbershop.es<br>soporte@barbershop.es
+                </p>
             </div>
 
         </div>

@@ -45,6 +45,16 @@
 
             <!-- Navigation -->
             <nav class="flex-1 space-y-2 px-3 md:px-4 py-4 md:py-6">
+                <!-- Inicio / Home -->
+                <a href="{{ route('home') }}" title="Inicio" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+   {{ request()->routeIs('home') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
+
+                    <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 11.5 12 4l9 7.5M5 10v10h5v-6h4v6h5V10" />
+                    </svg>
+
+                    <span class="hidden md:inline">Inicio</span>
+                </a>
 
                 <!-- Dashboard -->
                 <a href="{{ route('administrador.dashboard') }}" title="Dashboard" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors

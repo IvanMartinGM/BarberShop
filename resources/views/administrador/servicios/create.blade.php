@@ -20,8 +20,7 @@
             </p>
         </div>
 
-        <a href="{{ route('servicio.index') }}"
-           class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
+        <a href="{{ route('servicio.index') }}" class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
             Volver
         </a>
 
@@ -30,7 +29,7 @@
     <!-- Card principal -->
     <div class="rounded-panel border border-cream-200 bg-white shadow-card">
 
-        <form method="POST" action="{{ route('servicio.store') }}" class="p-6 sm:p-8 space-y-8">
+        <form method="POST" action="{{ route('servicio.store') }}" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-8">
             @csrf
 
             <!-- Información del servicio -->
@@ -48,25 +47,46 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
+
+
+                    <!-- Imagen del servicio -->
+                    <div class="md:col-span-2">
+                        <label for="imagen_servicio" class="block text-sm font-semibold text-navy mb-2">
+                            Imagen del servicio
+                        </label>
+
+                        <div class="rounded-panel border border-cream-200 bg-cream-50 p-4 sm:p-5">
+                            <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+
+                                <div class="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-card bg-white text-4xl shadow-card ring-2 ring-cream-200">
+                                    ✂️
+                                </div>
+
+                                <div class="flex-1">
+                                    <input type="file" id="imagen_servicio" name="imagen_servicio" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-card border border-cream-300 bg-white text-sm text-ink file:mr-4 file:border-0 file:bg-barber-red file:px-4 file:py-3 file:text-sm file:font-bold file:text-white hover:file:bg-barber-red-700 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+
+                                    <p class="mt-2 text-xs text-ink-600">
+                                        Formatos permitidos: JPG, JPEG, PNG o WEBP. Tamaño máximo: 2 MB.
+                                    </p>
+
+                                    @error('imagen_servicio')
+                                    <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     <!-- Nombre -->
                     <div class="md:col-span-2">
                         <label for="nombre_servicio" class="block text-sm font-semibold text-navy mb-2">
                             Nombre del servicio *
                         </label>
 
-                        <input
-                            type="text"
-                            id="nombre_servicio"
-                            name="nombre_servicio"
-                            value="{{ old('nombre_servicio') }}"
-                            required
-                            maxlength="100"
-                            placeholder="Corte clásico, Fade, Arreglo de barba..."
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="text" id="nombre_servicio" name="nombre_servicio" value="{{ old('nombre_servicio') }}" required maxlength="100" placeholder="Corte clásico, Fade, Arreglo de barba..." class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('nombre_servicio')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -76,21 +96,10 @@
                             Precio base *
                         </label>
 
-                        <input
-                            type="number"
-                            id="precio_base"
-                            name="precio_base"
-                            value="{{ old('precio_base') }}"
-                            required
-                            min="0"
-                            max="999999.99"
-                            step="0.01"
-                            placeholder="150.00"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="number" id="precio_base" name="precio_base" value="{{ old('precio_base') }}" required min="0" max="999999.99" step="0.01" placeholder="150.00" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('precio_base')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -100,20 +109,10 @@
                             Duración en minutos *
                         </label>
 
-                        <input
-                            type="number"
-                            id="duracion_minutos"
-                            name="duracion_minutos"
-                            value="{{ old('duracion_minutos') }}"
-                            required
-                            min="1"
-                            max="600"
-                            placeholder="30"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <input type="number" id="duracion_minutos" name="duracion_minutos" value="{{ old('duracion_minutos') }}" required min="1" max="600" placeholder="30" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
 
                         @error('duracion_minutos')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -123,11 +122,7 @@
                             Categoría
                         </label>
 
-                        <select
-                            id="categoria"
-                            name="categoria"
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                        >
+                        <select id="categoria" name="categoria" class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                             <option value="">Selecciona una categoría</option>
 
                             <option value="Corte" {{ old('categoria') === 'Corte' ? 'selected' : '' }}>
@@ -160,7 +155,7 @@
                         </select>
 
                         @error('categoria')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -187,17 +182,10 @@
                             Descripción
                         </label>
 
-                        <textarea
-                            id="descripcion"
-                            name="descripcion"
-                            rows="4"
-                            maxlength="1000"
-                            placeholder="Describe qué incluye este servicio..."
-                            class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors resize-none"
-                        >{{ old('descripcion') }}</textarea>
+                        <textarea id="descripcion" name="descripcion" rows="4" maxlength="1000" placeholder="Describe qué incluye este servicio..." class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink placeholder:text-ink-500 focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors resize-none">{{ old('descripcion') }}</textarea>
 
                         @error('descripcion')
-                            <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
+                        <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -208,17 +196,11 @@
             <!-- Botones -->
             <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-cream-200 pt-6">
 
-                <button
-                    type="reset"
-                    class="rounded-panel bg-cream-200 px-6 py-3 text-sm font-bold text-navy hover:bg-cream-300 transition-colors"
-                >
+                <button type="reset" class="rounded-panel bg-cream-200 px-6 py-3 text-sm font-bold text-navy hover:bg-cream-300 transition-colors">
                     Limpiar
                 </button>
 
-                <button
-                    type="submit"
-                    class="rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                >
+                <button type="submit" class="rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                     Guardar servicio
                 </button>
 

@@ -2,22 +2,30 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\cliente\ClienteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\administrador\BarberoController as AdministradorBarberoController;
 use App\Http\Controllers\administrador\ClienteController as AdministradorClienteController;
 use App\Http\Controllers\administrador\HorarioController as AdministradorHorarioController;
 use App\Http\Controllers\administrador\ServicioController as AdministradorServicioController;
-use App\Http\Controllers\barbero\HorarioController as BarberoHorarioController;
-use App\Http\Controllers\barbero\ServicioController as BarberoServicioController;
 use App\Http\Controllers\administrador\AssetController as AdministradorAssetController;
-use App\Models\Asset;
 use App\Http\Controllers\auth\PasswordResetController;
-use App\Http\Controllers\cliente\CitaController as ClienteCitaController;
 use App\Http\Controllers\administrador\CitaController as AdministradorCitaController;
-use App\Http\Controllers\administrador\PagoController as AdministradorPagoController; 
+use App\Http\Controllers\administrador\PagoController as AdministradorPagoController;
 use App\Http\Controllers\administrador\ReporteController as AdministradorReporteController;
 use App\Http\Controllers\administrador\DashboardController as AdministradorDashboardController;
+
+
+use App\Http\Controllers\barbero\HorarioController as BarberoHorarioController;
+use App\Http\Controllers\barbero\ServicioController as BarberoServicioController;
+use App\Http\Controllers\barbero\CitaController as BarberoCitaController;
+use App\Http\Controllers\barbero\DashboardController as BarberoDashboardController;
+
+use App\Http\Controllers\cliente\ClienteController;
+use App\Http\Controllers\cliente\CitaController as ClienteCitaController;
+
+use App\Http\Controllers\ServicioController as PublicServicioController;
+use App\Models\Asset;
 /* 
 
 Public Routes without authentication
@@ -28,31 +36,11 @@ Route::get('/contacto', function () {
     return view('contacto');
 })->name('contacto');
 
-Route::get('/servicios', function () {
-    return view('servicios');
-})->name('servicios');
+Route::get('/servicios', [PublicServicioController::class, 'index'])->name('servicios');
 
 
-Route::get('/', function () {
-    $carouselImages = Asset::where('tipo', 'image')
-        ->latest()
-        ->take(4)
-        ->get();
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    return view('home', compact('carouselImages'));
-})->name('home');
-
-
-//Public Routes without authentication
-Route::get('/layout/guest', function () {
-    return view('layouts.guest');
-})->name('guest');
-
-
-//Public Routes without authentication
-Route::get('/layout/admin', function () {
-    return view('layouts.admin');
-})->name('admin');
 
 /* 
 
@@ -60,9 +48,6 @@ Guest Routes
 
 */
 Route::middleware('guest')->group(function () {
-
-
-
 
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -108,7 +93,7 @@ Route::middleware(['auth', 'role:administrador'])
     ->group(function () {
 
 
-    Route::get('/dashboard', [AdministradorDashboardController::class, 'index'])->name('administrador.dashboard');
+        Route::get('/dashboard', [AdministradorDashboardController::class, 'index'])->name('administrador.dashboard');
 
         /*
 
@@ -220,8 +205,8 @@ Route::middleware(['auth', 'role:administrador'])
 
         Route::get('/reportes/clientes/pdf', [AdministradorClienteController::class, 'pdf'])->name('reportes.clientes.pdf');
         Route::get('/reportes/barberos/pdf', [AdministradorBarberoController::class, 'pdf'])->name('reportes.barberos.pdf');
-        
-        
+
+
         Route::get('/reportes', [AdministradorReporteController::class, 'index'])->name('administrador.reportes.index');
 
 
@@ -264,23 +249,20 @@ Private Routes with authentication and role-based access control for Barbero
 
 Route::middleware(['auth', 'role:barbero'])
     ->prefix('barbero')
+    ->name('barbero.')
     ->group(function () {
 
-        //The layout for barbero
-        Route::get('/layout/barbero', function () {
-            return view('layouts.barbero');
-        })->name('barbero.layout');
+        Route::get('/dashboard', [BarberoDashboardController::class, 'index'])->name('dashboard');
 
-        // Their proper dashboard route for barbero
-        Route::get('/dashboard', function () {
-            return view('barbero.dashboard');
-        })->name('barbero.dashboard');
+        Route::get('/citas', [BarberoCitaController::class, 'index'])->name('citas.index');
 
-        Route::get('/barbero/horarios', [BarberoHorarioController::class, 'index'])->name('barbero.horarios.index');
+        Route::get('/citas/{id}', [BarberoCitaController::class, 'show'])->name('citas.show');
+
+        Route::get('/horarios', [BarberoHorarioController::class, 'index'])->name('horarios.index');
 
         // The route to update the horarios of the barbero
-        Route::get('/servicios', [BarberoServicioController::class, 'index'])->name('barbero.servicios.index');
-        Route::patch('/servicios', [BarberoServicioController::class, 'updateSelfServices'])->name('barbero.servicios.self.update');
+        Route::get('/servicios', [BarberoServicioController::class, 'index'])->name('servicios.index');
+        Route::patch('/servicios', [BarberoServicioController::class, 'updateSelfServices'])->name('servicios.self.update');
     });
 
 

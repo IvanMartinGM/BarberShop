@@ -68,7 +68,7 @@
 
                 <!-- Mis citas -->
                 <a
-                    href="#barbero.citas.index"
+                    href="{{ route('barbero.citas.index') }}"
                     title="Mis citas"
                     class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
                     {{ request()->routeIs('barbero.citas.*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}"

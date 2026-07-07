@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Servicio;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ServicioController extends Controller
@@ -29,16 +30,21 @@ class ServicioController extends Controller
             'precio_base' => 'required|numeric|min:0|max:999999.99',
             'duracion_minutos' => 'required|integer|min:1|max:600',
             'categoria' => 'nullable|string|max:60',
-            'imagen_servicio' => 'nullable|string|max:255',
+            'imagen_servicio' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
+        $serviceImagePath = null;
+
+        if ($request->hasFile('imagen_servicio')) {
+            $serviceImagePath = $request->file('imagen_servicio')->store('service_images', 'public');
+        }
         Servicio::create([
             'nombre_servicio' => $validatedData['nombre_servicio'],
             'descripcion' => $validatedData['descripcion'] ?? null,
             'precio_base' => $validatedData['precio_base'],
             'duracion_minutos' => $validatedData['duracion_minutos'],
             'categoria' => $validatedData['categoria'] ?? null,
-            'imagen_servicio' => $validatedData['imagen_servicio'] ?? null,
+            'imagen_servicio' => $serviceImagePath,
             'estado' => 1,
         ]);
 
@@ -102,25 +108,37 @@ class ServicioController extends Controller
             'precio_base' => 'required|numeric|min:0|max:999999.99',
             'duracion_minutos' => 'required|integer|min:1|max:600',
             'categoria' => 'nullable|string|max:60',
-            'imagen_servicio' => 'nullable|string|max:255',
+            'imagen_servicio' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'estado' => 'required|boolean',
         ]);
 
-        $servicio->update([
+        $serviceData = [
             'nombre_servicio' => $validatedData['nombre_servicio'],
             'descripcion' => $validatedData['descripcion'] ?? null,
             'precio_base' => $validatedData['precio_base'],
             'duracion_minutos' => $validatedData['duracion_minutos'],
             'categoria' => $validatedData['categoria'] ?? null,
-            'imagen_servicio' => $validatedData['imagen_servicio'] ?? null,
             'estado' => $validatedData['estado'],
-        ]);
+        ];
+
+        if ($request->hasFile('imagen_servicio')) {
+            if (
+                $servicio->imagen_servicio &&
+                str_starts_with($servicio->imagen_servicio, 'service_images/') &&
+                Storage::disk('public')->exists($servicio->imagen_servicio)
+            ) {
+                Storage::disk('public')->delete($servicio->imagen_servicio);
+            }
+
+            $serviceData['imagen_servicio'] = $request->file('imagen_servicio')->store('service_images', 'public');
+        }
+
+        $servicio->update($serviceData);
 
         return redirect()
             ->route('servicio.show', $servicio->id)
             ->with('status', 'Servicio actualizado correctamente.');
     }
-
     public function destroy(int $id): RedirectResponse
     {
         $servicio = Servicio::find($id);

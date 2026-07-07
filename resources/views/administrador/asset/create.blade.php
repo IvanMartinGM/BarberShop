@@ -23,22 +23,29 @@
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row">
-            <a href="{{ route('asset.images') }}"
-                class="inline-flex items-center justify-center rounded-panel bg-navy px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-navy-800 transition-colors">
+            <a href="{{ route('asset.images') }}" class="inline-flex items-center justify-center rounded-panel bg-navy px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-navy-800 transition-colors">
                 Ver imágenes
             </a>
 
-            <a href="{{ route('asset.videos') }}"
-                class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 transition-colors">
+            <a href="{{ route('asset.videos') }}" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-5 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 transition-colors">
                 Ver videos
             </a>
         </div>
     </div>
 
-    @if (session('status'))
-        <div class="rounded-panel border border-success bg-success-light px-5 py-4 text-sm font-bold text-success">
-            {{ session('status') }}
-        </div>
+
+    @if ($errors->any())
+    <div class="rounded-panel border border-danger bg-danger-light px-5 py-4">
+        <p class="text-sm font-bold text-danger">
+            No se pudo subir el archivo.
+        </p>
+
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-sm font-medium text-danger">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <div class="rounded-panel border border-cream-200 bg-white shadow-card">
@@ -59,11 +66,10 @@
                     Título
                 </label>
 
-                <input type="text" name="titulo" value="{{ old('titulo') }}"
-                    class="mt-2 w-full rounded-card border border-cream-300 px-4 py-3 text-sm text-ink focus:border-navy focus:outline-none focus:ring-4 focus:ring-navy-100">
+                <input type="text" name="titulo" value="{{ old('titulo') }}" class="mt-2 w-full rounded-card border border-cream-300 px-4 py-3 text-sm text-ink focus:border-navy focus:outline-none focus:ring-4 focus:ring-navy-100">
 
                 @error('titulo')
-                    <p class="mt-1 text-sm font-semibold text-danger">{{ $message }}</p>
+                <p class="mt-1 text-sm font-semibold text-danger">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -72,15 +78,14 @@
                     Tipo de archivo
                 </label>
 
-                <select name="tipo"
-                    class="mt-2 w-full rounded-card border border-cream-300 px-4 py-3 text-sm text-ink focus:border-navy focus:outline-none focus:ring-4 focus:ring-navy-100">
+                <select name="tipo" class="mt-2 w-full rounded-card border border-cream-300 px-4 py-3 text-sm text-ink focus:border-navy focus:outline-none focus:ring-4 focus:ring-navy-100">
                     <option value="">Selecciona una opción</option>
-                    <option value="image" @selected(old('tipo') === 'image')>Imagen</option>
-                    <option value="video" @selected(old('tipo') === 'video')>Video</option>
+                    <option value="image" @selected(old('tipo')==='image' )>Imagen</option>
+                    <option value="video" @selected(old('tipo')==='video' )>Video</option>
                 </select>
 
                 @error('tipo')
-                    <p class="mt-1 text-sm font-semibold text-danger">{{ $message }}</p>
+                <p class="mt-1 text-sm font-semibold text-danger">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -89,21 +94,20 @@
                     Archivo
                 </label>
 
-                <input type="file" name="archivo"
-                    class="mt-2 w-full rounded-card border border-cream-300 bg-cream-50 px-4 py-3 text-sm text-ink">
+                <input type="file" name="archivo" class="mt-2 w-full rounded-card border border-cream-300 bg-cream-50 px-4 py-3 text-sm text-ink">
 
                 <p class="mt-2 text-xs text-ink-500">
-                    Imágenes: jpg, jpeg, png, webp. Videos: mp4, mov, avi, webm.
+                    Imágenes permitidas: jpg, jpeg, png, webp. Tamaño máximo: 5 MB.
+                    Videos permitidos: mp4, mov, avi, webm. Tamaño máximo: 50 MB.
                 </p>
 
                 @error('archivo')
-                    <p class="mt-1 text-sm font-semibold text-danger">{{ $message }}</p>
+                <p class="mt-1 text-sm font-semibold text-danger">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="flex justify-end">
-                <button type="submit"
-                    class="inline-flex items-center justify-center rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                <button type="submit" class="inline-flex items-center justify-center rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
                     Subir archivo
                 </button>
             </div>
