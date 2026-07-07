@@ -43,7 +43,7 @@ class AuthController extends Controller
             } elseif ($user->hasRole('barbero')) {
                 return redirect()->route('barbero.dashboard');
             } elseif ($user->hasRole('cliente')) {
-                return redirect()->route('cliente.dashboard');
+                return redirect()->route('home');
             }
 
         }

@@ -1,23 +1,53 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\administrador;
 
-use Illuminate\Http\Request;
+use App\Models\Barbero;
+use App\Http\Controllers\Controller;
+use App\Models\Cita;
+use App\Models\Cliente;
+use App\Models\Pago;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        return view('dashboard');
-    }
+        $citasHoy = Cita::with([
+            'cliente.user',
+            'barbero.user',
+            'servicios',
+        ])
+            ->whereDate('fecha_cita', today())
+            ->orderBy('hora_inicio')
+            ->get();
 
-    public function calculateStatistics()
-    {
-        // Example logic to calculate statistics
-            //'total_users' => \App\Models\User::count(),
-            //'total_barbers' => \App\Models\Barbero::count(),
-            //'total_clients' => \App\Models\Cliente::count(),
-            // Add more statistics as needed
-        
+        $totalCitasHoy = $citasHoy->count();
+
+        $totalClientes = Cliente::count();
+
+        $totalBarberosActivos = Barbero::where('estado_disponibilidad', '!=', 'inactivo')
+            ->count();
+
+        $pagosPendientes = Pago::where('estado_pago', 'pendiente')
+            ->count();
+
+        $barberos = Barbero::with('user')
+            ->orderBy('estado_disponibilidad')
+            ->get();
+
+        $ingresosHoy = Pago::where('estado_pago', 'pagado')
+            ->whereDate('fecha_pago', today())
+            ->sum('monto');
+
+        return view('administrador.dashboard', compact(
+            'citasHoy',
+            'totalCitasHoy',
+            'totalClientes',
+            'totalBarberosActivos',
+            'pagosPendientes',
+            'barberos',
+            'ingresosHoy'
+        ));
     }
 }

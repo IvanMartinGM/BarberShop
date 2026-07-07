@@ -58,9 +58,7 @@ class Cita extends Model
             ->as('citas_servicios')
             ->withPivot(
                 'precio_aplicado',
-                'hora_inicio_real',
-                'hora_fin_real',
-                'duracion_real_minutos',
+                'estado_servicio',
                 'observaciones_servicio'
             );
     }

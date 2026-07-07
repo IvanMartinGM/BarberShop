@@ -13,6 +13,11 @@ use App\Http\Controllers\barbero\ServicioController as BarberoServicioController
 use App\Http\Controllers\administrador\AssetController as AdministradorAssetController;
 use App\Models\Asset;
 use App\Http\Controllers\auth\PasswordResetController;
+use App\Http\Controllers\cliente\CitaController as ClienteCitaController;
+use App\Http\Controllers\administrador\CitaController as AdministradorCitaController;
+use App\Http\Controllers\administrador\PagoController as AdministradorPagoController; 
+use App\Http\Controllers\administrador\ReporteController as AdministradorReporteController;
+use App\Http\Controllers\administrador\DashboardController as AdministradorDashboardController;
 /* 
 
 Public Routes without authentication
@@ -103,10 +108,7 @@ Route::middleware(['auth', 'role:administrador'])
     ->group(function () {
 
 
-        Route::get('/dashboard', function () {
-            return view('administrador.dashboard');
-        })->name('administrador.dashboard');
-
+    Route::get('/dashboard', [AdministradorDashboardController::class, 'index'])->name('administrador.dashboard');
 
         /*
 
@@ -199,7 +201,7 @@ Route::middleware(['auth', 'role:administrador'])
 
         /*
 
-        Routes for managing clientes 
+        Routes for managing servicios
         
         */
 
@@ -218,6 +220,9 @@ Route::middleware(['auth', 'role:administrador'])
 
         Route::get('/reportes/clientes/pdf', [AdministradorClienteController::class, 'pdf'])->name('reportes.clientes.pdf');
         Route::get('/reportes/barberos/pdf', [AdministradorBarberoController::class, 'pdf'])->name('reportes.barberos.pdf');
+        
+        
+        Route::get('/reportes', [AdministradorReporteController::class, 'index'])->name('administrador.reportes.index');
 
 
         // Routes for landing assets
@@ -228,6 +233,25 @@ Route::middleware(['auth', 'role:administrador'])
         Route::get('/assets/images', [AdministradorAssetController::class, 'getImage'])->name('asset.images');
 
         Route::get('/assets/videos', [AdministradorAssetController::class, 'getVideo'])->name('asset.videos');
+
+
+        /* Routes for managing citas  */
+
+        // Routes for appointments management
+        Route::get('/citas', [AdministradorCitaController::class, 'index'])->name('administrador.citas.index');
+
+        Route::get('/citas/{id}', [AdministradorCitaController::class, 'show'])->name('administrador.citas.show');
+
+        Route::patch('/citas/{id}/estado', [AdministradorCitaController::class, 'updateStatus'])->name('administrador.citas.estado.update');
+
+        /* Routes for managing pagos  */
+        Route::get('/pagos', [AdministradorPagoController::class, 'index'])->name('administrador.pagos.index');
+
+        Route::get('/pagos/create', [AdministradorPagoController::class, 'create'])->name('administrador.pagos.create');
+
+        Route::post('/pagos', [AdministradorPagoController::class, 'store'])->name('administrador.pagos.store');
+
+        Route::get('/pagos/{id}', [AdministradorPagoController::class, 'show'])->name('administrador.pagos.show');
     });
 
 
@@ -248,12 +272,15 @@ Route::middleware(['auth', 'role:barbero'])
         })->name('barbero.layout');
 
         // Their proper dashboard route for barbero
-        Route::get('/barbero/dashboard', function () {
+        Route::get('/dashboard', function () {
             return view('barbero.dashboard');
         })->name('barbero.dashboard');
 
         Route::get('/barbero/horarios', [BarberoHorarioController::class, 'index'])->name('barbero.horarios.index');
+
+        // The route to update the horarios of the barbero
         Route::get('/servicios', [BarberoServicioController::class, 'index'])->name('barbero.servicios.index');
+        Route::patch('/servicios', [BarberoServicioController::class, 'updateSelfServices'])->name('barbero.servicios.self.update');
     });
 
 
@@ -265,15 +292,20 @@ Private Routes with authentication and role-based access control for Cliente
 
 Route::middleware(['auth', 'role:cliente'])
     ->prefix('cliente')
+    ->name('cliente.')
     ->group(function () {
 
-        //The layout for cliente
-        Route::get('/layout/cliente', function () {
-            return view('layouts.cliente');
-        })->name('cliente.layout');
 
-        // Their proper dashboard route for cliente
-        Route::get('/cliente/dashboard', function () {
-            return view('cliente.dashboard');
-        })->name('cliente.dashboard');
+        Route::get('/servicios/{servicio}/barberos', [ClienteCitaController::class, 'barberosPorServicio'])->name('servicios.barberos');
+
+
+        Route::get('/citas/create', [ClienteCitaController::class, 'create'])->name('citas.create');
+
+        Route::post('/citas', [ClienteCitaController::class, 'store'])->name('citas.store');
+
+        Route::get('/citas', [ClienteCitaController::class, 'index'])->name('citas.index');
+
+        Route::get('/citas/{id}', [ClienteCitaController::class, 'show'])->name('citas.show');
+
+        Route::patch('/citas/{id}/cancelar', [ClienteCitaController::class, 'cancel'])->name('citas.cancel');
     });

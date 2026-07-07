@@ -1,386 +1,255 @@
-@extends('layouts.admin')
+@extends('layouts.guest')
 
-@section('title', 'Mi perfil - BarberShop')
-@section('page-title', 'Mi perfil')
+@section('title', 'Editar perfil - BarberShop')
 
 @section('content')
 
-<section class="space-y-6">
+@php
+    $defaultProfilePhoto = 'images/default-avatar.svg';
 
-    <!-- Header interno -->
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    $fotoPerfil = $user->foto_perfil;
 
-        <div>
-            <h2 class="font-display text-3xl font-bold text-navy">
-                Mi perfil
-            </h2>
+    if (!$fotoPerfil) {
+        $fotoPerfilUrl = asset($defaultProfilePhoto);
+    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, ['http://', 'https://'])) {
+        $fotoPerfilUrl = $fotoPerfil;
+    } elseif (\Illuminate\Support\Str::startsWith($fotoPerfil, 'images/')) {
+        $fotoPerfilUrl = asset($fotoPerfil);
+    } else {
+        $fotoPerfilUrl = asset('storage/' . $fotoPerfil);
+    }
+@endphp
 
-            <p class="mt-2 text-sm text-ink-600">
-                Actualiza la información de tu cuenta administrativa.
-            </p>
+<section class="bg-cream py-12 md:py-16">
+
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+
+        <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="font-display text-4xl font-bold text-navy">
+                    Editar perfil
+                </h1>
+
+                <p class="mt-2 text-sm text-ink-600">
+                    Actualiza tu información personal y datos de acceso.
+                </p>
+            </div>
+
+            <a href="{{ route('profile.show') }}"
+               class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
+                Volver a mi perfil
+            </a>
         </div>
 
-        <a href="{{ route('administrador.dashboard') }}"
-           class="inline-flex items-center justify-center rounded-panel border border-cream-300 bg-white px-5 py-3 text-sm font-bold text-navy hover:bg-cream-100 transition-colors">
-            Volver al dashboard
-        </a>
-
-    </div>
-
-    <!-- Layout principal -->
-    <div class="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6">
-
-        <!-- Card perfil -->
-        <aside class="rounded-panel border border-cream-200 bg-white shadow-card overflow-hidden">
-
-            <div class="bg-navy px-6 py-8 text-center">
-
-                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-barber-red text-4xl font-bold text-white shadow-panel">
-                    {{ strtoupper(substr($user->nombres ?? 'A', 0, 1)) }}
-                </div>
-
-                <h3 class="mt-4 font-display text-2xl font-bold text-white">
-                    {{ $user->nombres ?? 'Administrador' }}
-                    {{ $user->primer_apellido ?? '' }}
-                </h3>
-
-                <p class="mt-1 text-sm text-cream-200">
-                    Cuenta administrativa
+        @if ($errors->any())
+            <div class="mb-6 rounded-card border border-danger bg-danger-light px-5 py-4 text-sm text-danger">
+                <p class="mb-2 font-bold">
+                    Hay errores en el formulario:
                 </p>
 
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>
+                            {{ $error }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST"
+              action="{{ route('profile.update') }}"
+              enctype="multipart/form-data"
+              class="overflow-hidden rounded-panel border border-cream-200 bg-white shadow-panel">
+            @csrf
+            @method('PUT')
+
+            <div class="bg-linear-to-r from-navy via-navy-800 to-barber-red px-6 py-8 text-white">
+
+                <div class="flex flex-col items-center gap-5 sm:flex-row">
+
+                    <div class="h-28 w-28 overflow-hidden rounded-full bg-white p-1 shadow-elevated ring-4 ring-white/20">
+                        <img src="{{ $fotoPerfilUrl }}"
+                             alt="Foto de perfil de {{ $user->nombres }}"
+                             class="h-full w-full rounded-full object-cover">
+                    </div>
+
+                    <div class="text-center sm:text-left">
+                        <h2 class="font-display text-3xl font-bold">
+                            {{ $user->getFullName() }}
+                        </h2>
+
+                        <p class="mt-2 text-sm text-cream-100">
+                            Puedes cambiar tu foto de perfil desde el formulario.
+                        </p>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="p-6 space-y-5">
+            <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
 
-                <!-- Estado -->
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Estado
-                    </p>
+                    <label for="nombres" class="mb-2 block text-sm font-bold text-navy">
+                        Nombre(s)
+                    </label>
 
-                    <div class="mt-2">
-                        @if ($user->estado == 1)
-                            <span class="inline-flex rounded-full bg-success-light px-3 py-1 text-xs font-bold text-success">
-                                Activo
-                            </span>
-                        @else
-                            <span class="inline-flex rounded-full bg-danger-light px-3 py-1 text-xs font-bold text-danger">
-                                Inactivo
-                            </span>
-                        @endif
-                    </div>
+                    <input type="text"
+                           name="nombres"
+                           id="nombres"
+                           value="{{ old('nombres', $user->nombres) }}"
+                           required
+                           class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
                 </div>
 
-                <!-- Correo -->
-                <div class="border-t border-cream-200 pt-5">
-                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Correo electrónico
-                    </p>
+                <div>
+                    <label for="primer_apellido" class="mb-2 block text-sm font-bold text-navy">
+                        Primer apellido
+                    </label>
 
-                    <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $user->email ?? 'No registrado' }}
-                    </p>
+                    <input type="text"
+                           name="primer_apellido"
+                           id="primer_apellido"
+                           value="{{ old('primer_apellido', $user->primer_apellido) }}"
+                           required
+                           class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
                 </div>
 
-                <!-- Nombre usuario -->
-                <div class="border-t border-cream-200 pt-5">
-                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
+                <div>
+                    <label for="segundo_apellido" class="mb-2 block text-sm font-bold text-navy">
+                        Segundo apellido
+                    </label>
+
+                    <input type="text"
+                           name="segundo_apellido"
+                           id="segundo_apellido"
+                           value="{{ old('segundo_apellido', $user->segundo_apellido) }}"
+                           class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
+                </div>
+
+                <div>
+                    <label for="nombre_usuario" class="mb-2 block text-sm font-bold text-navy">
                         Nombre de usuario
-                    </p>
+                    </label>
 
-                    <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $user->nombre_usuario ?? 'No registrado' }}
-                    </p>
+                    <input type="text"
+                           name="nombre_usuario"
+                           id="nombre_usuario"
+                           value="{{ old('nombre_usuario', $user->nombre_usuario) }}"
+                           required
+                           class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
                 </div>
 
-                <!-- Celular -->
-                <div class="border-t border-cream-200 pt-5">
-                    <p class="text-xs font-bold uppercase tracking-wide text-ink-500">
-                        Celular
-                    </p>
+                <div>
+                    <label for="email" class="mb-2 block text-sm font-bold text-navy">
+                        Correo electrónico
+                    </label>
 
-                    <p class="mt-1 text-sm font-medium text-ink">
-                        {{ $user->celular ?? 'No registrado' }}
-                    </p>
+                    <input type="email"
+                           name="email"
+                           id="email"
+                           value="{{ old('email', $user->email) }}"
+                           required
+                           class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
+                </div>
+
+                <div>
+                    <label for="celular" class="mb-2 block text-sm font-bold text-navy">
+                        Celular
+                    </label>
+
+                    <input type="text"
+                           name="celular"
+                           id="celular"
+                           value="{{ old('celular', $user->celular) }}"
+                           class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
+                </div>
+
+                <div>
+                    <label for="genero" class="mb-2 block text-sm font-bold text-navy">
+                        Género
+                    </label>
+
+                    <select name="genero"
+                            id="genero"
+                            class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
+                        <option value="">Selecciona una opción</option>
+                        <option value="M" {{ old('genero', $user->genero) === 'M' ? 'selected' : '' }}>Masculino</option>
+                        <option value="F" {{ old('genero', $user->genero) === 'F' ? 'selected' : '' }}>Femenino</option>
+                        <option value="otro" {{ old('genero', $user->genero) === 'otro' ? 'selected' : '' }}>Otro</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="foto_perfil" class="mb-2 block text-sm font-bold text-navy">
+                        Foto de perfil
+                    </label>
+
+                    <input type="file"
+                           name="foto_perfil"
+                           id="foto_perfil"
+                           accept="image/png,image/jpeg,image/jpg,image/webp"
+                           class="w-full rounded-card border border-cream-300 bg-white px-4 py-3 text-sm text-ink shadow-sm file:mr-4 file:rounded-card file:border-0 file:bg-barber-red file:px-4 file:py-2 file:font-bold file:text-white hover:file:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100">
                 </div>
 
             </div>
 
-        </aside>
+            <div class="border-t border-cream-200 bg-cream-50 p-6">
 
-        <!-- Formulario -->
-        <div class="rounded-panel border border-cream-200 bg-white shadow-card">
+                <h3 class="font-display text-2xl font-bold text-navy">
+                    Cambiar contraseña
+                </h3>
 
-            <form method="POST" action="{{ route('profile.update') }}" class="p-6 sm:p-8 space-y-8">
-                @csrf
-                @method('PUT')
+                <p class="mt-1 text-sm text-ink-500">
+                    Deja estos campos vacíos si no deseas cambiar tu contraseña.
+                </p>
 
-                <!-- Información personal -->
-                <div>
+                <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                    <div class="mb-5 border-b border-cream-200 pb-4">
-                        <h3 class="font-display text-2xl font-bold text-navy">
-                            Información personal
-                        </h3>
+                    <div>
+                        <label for="password" class="mb-2 block text-sm font-bold text-navy">
+                            Nueva contraseña
+                        </label>
 
-                        <p class="mt-1 text-sm text-ink-600">
-                            Estos datos pertenecen a tu usuario administrador.
-                        </p>
+                        <input type="password"
+                               name="password"
+                               id="password"
+                               placeholder="Mínimo 8 caracteres"
+                               class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                        <label for="password_confirmation" class="mb-2 block text-sm font-bold text-navy">
+                            Confirmar contraseña
+                        </label>
 
-                        <!-- Nombres -->
-                        <div>
-                            <label for="nombres" class="block text-sm font-semibold text-navy mb-2">
-                                Nombres *
-                            </label>
-
-                            <input
-                                type="text"
-                                id="nombres"
-                                name="nombres"
-                                value="{{ old('nombres', $user->nombres) }}"
-                                required
-                                maxlength="100"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-
-                            @error('nombres')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Primer apellido -->
-                        <div>
-                            <label for="primer_apellido" class="block text-sm font-semibold text-navy mb-2">
-                                Primer apellido *
-                            </label>
-
-                            <input
-                                type="text"
-                                id="primer_apellido"
-                                name="primer_apellido"
-                                value="{{ old('primer_apellido', $user->primer_apellido) }}"
-                                required
-                                maxlength="100"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-
-                            @error('primer_apellido')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Segundo apellido -->
-                        <div>
-                            <label for="segundo_apellido" class="block text-sm font-semibold text-navy mb-2">
-                                Segundo apellido
-                            </label>
-
-                            <input
-                                type="text"
-                                id="segundo_apellido"
-                                name="segundo_apellido"
-                                value="{{ old('segundo_apellido', $user->segundo_apellido) }}"
-                                maxlength="100"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-
-                            @error('segundo_apellido')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Género -->
-                        <div>
-                            <label for="genero" class="block text-sm font-semibold text-navy mb-2">
-                                Género
-                            </label>
-
-                            <select
-                                id="genero"
-                                name="genero"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-                                <option value="">Selecciona una opción</option>
-
-                                <option value="M" {{ old('genero', $user->genero) === 'M' ? 'selected' : '' }}>
-                                    Masculino
-                                </option>
-
-                                <option value="F" {{ old('genero', $user->genero) === 'F' ? 'selected' : '' }}>
-                                    Femenino
-                                </option>
-
-                                <option value="otro" {{ old('genero', $user->genero) === 'otro' ? 'selected' : '' }}>
-                                    Otro
-                                </option>
-                            </select>
-
-                            @error('genero')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
+                        <input type="password"
+                               name="password_confirmation"
+                               id="password_confirmation"
+                               placeholder="Repite la nueva contraseña"
+                               class="w-full rounded-card border border-cream-300 px-4 py-3 text-ink shadow-sm focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100">
                     </div>
 
                 </div>
 
-                <!-- Información de acceso -->
-                <div>
+            </div>
 
-                    <div class="mb-5 border-b border-cream-200 pb-4">
-                        <h3 class="font-display text-2xl font-bold text-navy">
-                            Información de acceso
-                        </h3>
+            <div class="flex flex-col-reverse gap-3 border-t border-cream-200 px-6 py-5 sm:flex-row sm:justify-end">
 
-                        <p class="mt-1 text-sm text-ink-600">
-                            Datos usados para iniciar sesión en el sistema.
-                        </p>
-                    </div>
+                <a href="{{ route('profile.show') }}"
+                   class="inline-flex items-center justify-center rounded-panel bg-cream-200 px-6 py-3 text-sm font-bold text-navy hover:bg-cream-300 transition-colors">
+                    Cancelar
+                </a>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <button type="submit"
+                        class="inline-flex items-center justify-center rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white shadow-card hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors">
+                    Guardar cambios
+                </button>
 
-                        <!-- Email -->
-                        <div>
-                            <label for="email" class="block text-sm font-semibold text-navy mb-2">
-                                Correo electrónico *
-                            </label>
+            </div>
 
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value="{{ old('email', $user->email) }}"
-                                required
-                                maxlength="255"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-
-                            @error('email')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Nombre usuario -->
-                        <div>
-                            <label for="nombre_usuario" class="block text-sm font-semibold text-navy mb-2">
-                                Nombre de usuario *
-                            </label>
-
-                            <input
-                                type="text"
-                                id="nombre_usuario"
-                                name="nombre_usuario"
-                                value="{{ old('nombre_usuario', $user->nombre_usuario) }}"
-                                required
-                                maxlength="100"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-
-                            @error('nombre_usuario')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Celular -->
-                        <div class="md:col-span-2">
-                            <label for="celular" class="block text-sm font-semibold text-navy mb-2">
-                                Celular
-                            </label>
-
-                            <input
-                                type="text"
-                                id="celular"
-                                name="celular"
-                                value="{{ old('celular', $user->celular) }}"
-                                maxlength="20"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-
-                            @error('celular')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Cambio de contraseña -->
-                <div>
-
-                    <div class="mb-5 border-b border-cream-200 pb-4">
-                        <h3 class="font-display text-2xl font-bold text-navy">
-                            Cambiar contraseña
-                        </h3>
-
-                        <p class="mt-1 text-sm text-ink-600">
-                            Deja estos campos vacíos si no quieres cambiar tu contraseña.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
-                        <!-- Password -->
-                        <div>
-                            <label for="password" class="block text-sm font-semibold text-navy mb-2">
-                                Nueva contraseña
-                            </label>
-
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                autocomplete="new-password"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-
-                            @error('password')
-                                <p class="text-sm text-barber-red mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Password confirmation -->
-                        <div>
-                            <label for="password_confirmation" class="block text-sm font-semibold text-navy mb-2">
-                                Confirmar nueva contraseña
-                            </label>
-
-                            <input
-                                type="password"
-                                id="password_confirmation"
-                                name="password_confirmation"
-                                autocomplete="new-password"
-                                class="w-full px-4 py-3 rounded-card border border-cream-300 bg-white text-ink focus:border-barber-red focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                            >
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Botones -->
-                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-cream-200 pt-6">
-
-                    <a href="{{ route('administrador.dashboard') }}"
-                       class="inline-flex items-center justify-center rounded-panel bg-cream-200 px-6 py-3 text-sm font-bold text-navy hover:bg-cream-300 transition-colors">
-                        Cancelar
-                    </a>
-
-                    <button
-                        type="submit"
-                        class="rounded-panel bg-barber-red px-6 py-3 text-sm font-bold text-white hover:bg-barber-red-700 focus:outline-none focus:ring-4 focus:ring-barber-red-100 transition-colors"
-                    >
-                        Guardar cambios
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
+        </form>
 
     </div>
 

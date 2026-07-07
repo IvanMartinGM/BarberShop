@@ -95,7 +95,7 @@
                 </a>
 
                 <!-- Citas -->
-                <a href="{{ url('/citas') }}" title="Citas" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+                <a href="{{ route('administrador.citas.index') }}" title="Citas" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
                    {{ request()->is('citas*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
                     <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,10 +115,9 @@
 
                     <span class="hidden md:inline">Servicios</span>
                 </a>
-
                 <!-- Pagos -->
-                <a href="{{ url('/pagos') }}" title="Pagos" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
-                   {{ request()->is('pagos*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
+                <a href="{{ route('administrador.pagos.index') }}" title="Pagos" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+   {{ request()->routeIs('administrador.pagos.*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
                     <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 10h18M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z" />
@@ -128,11 +127,11 @@
                 </a>
 
                 <!-- Reportes -->
-                <a href="{{ url('/reportes') }}" title="Reportes" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
-                   {{ request()->is('reportes*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
+                <a href="{{ route('administrador.reportes.index') }}" title="Reportes" class="flex items-center justify-center md:justify-start gap-3 rounded-panel px-3 md:px-4 py-3 text-sm transition-colors
+   {{ request()->routeIs('administrador.reportes.*') ? 'bg-barber-red text-white font-semibold shadow-card' : 'text-cream-200 font-medium hover:bg-white/10 hover:text-white' }}">
 
                     <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5m5 14v-8m5 8V9m5 10V3" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z" />
                     </svg>
 
                     <span class="hidden md:inline">Reportes</span>

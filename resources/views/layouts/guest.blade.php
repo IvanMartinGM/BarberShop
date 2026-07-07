@@ -25,8 +25,7 @@
             <div class="min-h-16 flex items-center justify-between gap-4 py-3 md:py-0">
 
                 <!-- Logo -->
-                <a href="{{ route('home') }}"
-                   class="flex items-center gap-2 min-w-0 font-display font-bold text-navy hover:text-barber-red transition-colors">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 min-w-0 font-display font-bold text-navy hover:text-barber-red transition-colors">
 
                     <span class="text-xl sm:text-2xl leading-none">
                         ✂️
@@ -39,77 +38,104 @@
 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center gap-6 lg:gap-8">
-                    <a href="{{ route('home') }}"
-                       class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+
+                    <a href="{{ route('home') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                         Inicio
                     </a>
 
-                    <a href="{{ route('servicios') }}"
-                       class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                    <a href="{{ route('servicios') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                         Servicios
                     </a>
 
-                    <a href="{{ route('contacto') }}"
-                       class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                    @auth
+                    @if (auth()->user()->hasRole('cliente'))
+
+                    <a href="{{ route('cliente.citas.create') }}" class="text-sm font-bold text-barber-red hover:text-barber-red-700 transition-colors">
+                        Agendar cita
+                    </a>
+
+                    <a href="{{ route('cliente.citas.index') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                        Mis citas
+                    </a>
+
+                    @endif
+                    @endauth
+
+                    <a href="{{ route('contacto') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
                         Contacto
                     </a>
+
+                    @auth
+                    @if (auth()->user()->hasRole('cliente'))
+
+                    <a href="{{ route('profile.show') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                        Mi perfil
+                    </a>
+
+                    @endif
+                    @endauth
+
                 </nav>
 
                 <!-- Desktop Auth Links -->
                 <div class="hidden md:flex items-center gap-3">
                     @auth
-                        <a href="{{ route('administrador.dashboard') }}"
-                           class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
-                            Dashboard
-                        </a>
 
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+                    @if (auth()->user()->hasRole('administrador'))
+                    <a href="{{ route('administrador.dashboard') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                        Dashboard
+                    </a>
+                    @endif
 
-                            <button type="submit"
-                                    class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
-                                Salir
-                            </button>
-                        </form>
+                    @if (auth()->user()->hasRole('barbero'))
+                    <a href="{{ route('barbero.dashboard') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                        Panel barbero
+                    </a>
+                    @endif
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <button type="submit" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                            Salir
+                        </button>
+                    </form>
+
                     @else
-                        <a href="{{ route('login') }}"
-                           class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
-                            Iniciar Sesión
-                        </a>
 
-                        <a href="{{ route('register.create') }}"
-                           class="inline-flex items-center justify-center rounded-md bg-barber-red px-4 py-2 text-sm font-semibold text-white shadow-card hover:bg-barber-red-600 transition-colors">
-                            Registrarse
-                        </a>
+                    <a href="{{ route('login') }}" class="text-sm font-medium text-ink hover:text-barber-red transition-colors">
+                        Iniciar Sesión
+                    </a>
+
+                    <a href="{{ route('register.create') }}" class="inline-flex items-center justify-center rounded-md bg-barber-red px-4 py-2 text-sm font-semibold text-white shadow-card hover:bg-barber-red-600 transition-colors">
+                        Registrarse
+                    </a>
+
                     @endauth
                 </div>
 
                 <!-- Mobile Auth Links -->
                 <div class="flex md:hidden items-center gap-2 shrink-0">
                     @auth
-                        <a href="{{ route('administrador.dashboard') }}"
-                           class="rounded-md bg-cream-100 px-3 py-2 text-xs font-semibold text-navy hover:bg-cream-200 transition-colors">
-                            Panel
-                        </a>
+                    <a href="{{ route('administrador.dashboard') }}" class="rounded-md bg-cream-100 px-3 py-2 text-xs font-semibold text-navy hover:bg-cream-200 transition-colors">
+                        Panel
+                    </a>
 
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
 
-                            <button type="submit"
-                                    class="rounded-md bg-barber-red px-3 py-2 text-xs font-semibold text-white hover:bg-barber-red-600 transition-colors">
-                                Salir
-                            </button>
-                        </form>
+                        <button type="submit" class="rounded-md bg-barber-red px-3 py-2 text-xs font-semibold text-white hover:bg-barber-red-600 transition-colors">
+                            Salir
+                        </button>
+                    </form>
                     @else
-                        <a href="{{ route('login') }}"
-                           class="rounded-md bg-cream-100 px-3 py-2 text-xs font-semibold text-navy hover:bg-cream-200 transition-colors">
-                            Entrar
-                        </a>
+                    <a href="{{ route('login') }}" class="rounded-md bg-cream-100 px-3 py-2 text-xs font-semibold text-navy hover:bg-cream-200 transition-colors">
+                        Entrar
+                    </a>
 
-                        <a href="{{ route('register.create') }}"
-                           class="rounded-md bg-barber-red px-3 py-2 text-xs font-semibold text-white hover:bg-barber-red-600 transition-colors">
-                            Registro
-                        </a>
+                    <a href="{{ route('register.create') }}" class="rounded-md bg-barber-red px-3 py-2 text-xs font-semibold text-white hover:bg-barber-red-600 transition-colors">
+                        Registro
+                    </a>
                     @endauth
                 </div>
 
@@ -118,18 +144,15 @@
             <!-- Mobile Navigation -->
             <nav class="md:hidden border-t border-cream-200 py-3">
                 <div class="grid grid-cols-3 gap-2 text-center">
-                    <a href="{{ route('home') }}"
-                       class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
+                    <a href="{{ route('home') }}" class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
                         Inicio
                     </a>
 
-                    <a href="{{ route('servicios') }}"
-                       class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
+                    <a href="{{ route('servicios') }}" class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
                         Servicios
                     </a>
 
-                    <a href="{{ route('contacto') }}"
-                       class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
+                    <a href="{{ route('contacto') }}" class="rounded-md px-3 py-2 text-sm font-medium text-ink hover:bg-cream-100 hover:text-barber-red transition-colors">
                         Contacto
                     </a>
                 </div>
@@ -174,22 +197,19 @@
 
                     <ul class="space-y-2 text-sm">
                         <li>
-                            <a href="{{ route('home') }}"
-                               class="text-cream-200 hover:text-white transition-colors">
+                            <a href="{{ route('home') }}" class="text-cream-200 hover:text-white transition-colors">
                                 Inicio
                             </a>
                         </li>
 
                         <li>
-                            <a href="{{ route('servicios') }}"
-                               class="text-cream-200 hover:text-white transition-colors">
+                            <a href="{{ route('servicios') }}" class="text-cream-200 hover:text-white transition-colors">
                                 Servicios
                             </a>
                         </li>
 
                         <li>
-                            <a href="{{ route('contacto') }}"
-                               class="text-cream-200 hover:text-white transition-colors">
+                            <a href="{{ route('contacto') }}" class="text-cream-200 hover:text-white transition-colors">
                                 Contacto
                             </a>
                         </li>
